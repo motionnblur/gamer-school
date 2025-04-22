@@ -15,11 +15,10 @@ import styles from "./page.module.css";
 export default function Home() {
   return (
     <>
-      {/* Navbar */}
       <AppBar position="static">
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            GameMastery
+            Game Mastery
           </Typography>
           <Button color="inherit">Login</Button>
           <Button color="inherit">Sign Up</Button>
@@ -39,13 +38,13 @@ export default function Home() {
             live streams.
           </Typography>
           <Button variant="contained" color="primary" size="large">
-            Start Learning
+            Start Your Journey
           </Button>
         </Container>
       </Box>
 
       {/* Feature Highlights */}
-      <Box sx={{ py: 8, bgcolor: "#273F4F" }}>
+      <Box sx={{ py: 8, bgcolor: "#121212" }}>
         <Container>
           <Grid container spacing={4}>
             <Grid size={6}>
@@ -90,10 +89,12 @@ export default function Home() {
       {/* Footer */}
       <Box
         sx={{
+          position: "fixed",
+          bottom: 0,
+          width: "100%",
           bgcolor: "#212121",
           color: "white",
-          py: 4,
-          mt: 8,
+          py: 3,
           textAlign: "center",
         }}
       >
