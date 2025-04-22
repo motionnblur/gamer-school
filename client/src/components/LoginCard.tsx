@@ -43,6 +43,13 @@ export default function LoginCard({
     setter(false);
   };
 
+  const login = () => {
+    fetch("http://localhost:8080/hello")
+      .then((res) => res.text())
+      .then((data) => console.log(data))
+      .catch((err) => console.log(err));
+  };
+
   return (
     <>
       <BgFiller onBgClick={onBgClick} />
@@ -105,7 +112,13 @@ export default function LoginCard({
               />
             )}
 
-            <Button fullWidth variant="contained" type="submit" sx={{ mt: 2 }}>
+            <Button
+              fullWidth
+              variant="contained"
+              type="submit"
+              sx={{ mt: 2 }}
+              onClick={login}
+            >
               {mode === "login" ? "Login" : "Sign Up"}
             </Button>
           </Box>
