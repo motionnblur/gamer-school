@@ -11,6 +11,7 @@ import {
 } from "@mui/material";
 
 import styles from "./page.module.css";
+import LoginCard from "@/components/LoginCard";
 
 export default function Home() {
   return (
@@ -25,7 +26,7 @@ export default function Home() {
         </Toolbar>
       </AppBar>
 
-      {/* Hero Section */}
+      <LoginCard />
       <Box
         sx={{ bgcolor: "#121212", color: "white", py: 10, textAlign: "center" }}
       >
