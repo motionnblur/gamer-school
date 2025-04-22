@@ -12,8 +12,18 @@ import {
 
 import styles from "./page.module.css";
 import LoginCard from "@/components/LoginCard";
+import { useState } from "react";
 
 export default function Home() {
+  const [loginCardOpen, setLoginCardOpen] = useState(false);
+
+  const onJourneyButtonClick = () => {
+    setLoginCardOpen(true);
+  };
+  const onLoginButtonClick = () => {
+    setLoginCardOpen(true);
+  };
+
   return (
     <>
       <AppBar position="static">
@@ -21,12 +31,15 @@ export default function Home() {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Game Mastery
           </Typography>
-          <Button color="inherit">Login</Button>
+          <Button color="inherit" onClick={onLoginButtonClick}>
+            Login
+          </Button>
           <Button color="inherit">Sign Up</Button>
         </Toolbar>
       </AppBar>
 
-      <LoginCard />
+      {loginCardOpen && <LoginCard setter={setLoginCardOpen} />}
+
       <Box
         sx={{ bgcolor: "#121212", color: "white", py: 10, textAlign: "center" }}
       >
@@ -38,7 +51,12 @@ export default function Home() {
             Learn from top-tier pro gamers, watch exclusive content, and join
             live streams.
           </Typography>
-          <Button variant="contained" color="primary" size="large">
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={onJourneyButtonClick}
+          >
             Start Your Journey
           </Button>
         </Container>
