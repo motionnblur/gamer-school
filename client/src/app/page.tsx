@@ -34,7 +34,6 @@ export default function Home() {
           <Button color="inherit" onClick={onLoginButtonClick}>
             Login
           </Button>
-          <Button color="inherit">Sign Up</Button>
         </Toolbar>
       </AppBar>
 
