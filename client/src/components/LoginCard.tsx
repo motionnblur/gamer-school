@@ -10,6 +10,7 @@ import {
   Container,
 } from "@mui/material";
 import BgFiller from "./BgFiller";
+import UserLoginDto from "@/dto/UserLoginDto";
 
 type AuthMode = "login" | "signup";
 
@@ -35,19 +36,27 @@ export default function LoginCard({
       // Add login API call here
     } else {
       console.log("Signing up with:", { email, password });
-      // Add sign-up API call here
+
+      const userLoginDto: UserLoginDto = {
+        userMail: email,
+        userPassword: password,
+      };
+
+      fetch("http://localhost:8080/sign", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userLoginDto),
+      })
+        .then((response) => response.text())
+        .then((data) => console.log(data))
+        .catch((error) => console.error("Error:", error));
     }
   };
 
   const onBgClick = () => {
     setter(false);
-  };
-
-  const login = () => {
-    fetch("http://localhost:8080/hello")
-      .then((res) => res.text())
-      .then((data) => console.log(data))
-      .catch((err) => console.log(err));
   };
 
   return (
@@ -112,13 +121,7 @@ export default function LoginCard({
               />
             )}
 
-            <Button
-              fullWidth
-              variant="contained"
-              type="submit"
-              sx={{ mt: 2 }}
-              onClick={login}
-            >
+            <Button fullWidth variant="contained" type="submit" sx={{ mt: 2 }}>
               {mode === "login" ? "Login" : "Sign Up"}
             </Button>
           </Box>
