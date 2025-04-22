@@ -2,6 +2,8 @@ package com.example.server.controller;
 
 import com.example.server.dto.UserLoginDto;
 import com.example.server.service.UserLoginService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,8 +17,14 @@ public class UserLoginController {
     }
 
     @PostMapping("/sign")
-    public String login(@RequestBody UserLoginDto userLoginDto) {
+    public HttpStatus sign(@RequestBody UserLoginDto userLoginDto) {
         userLoginService.signUp(userLoginDto);
-        return "success";
+        return HttpStatus.OK;
+    }
+
+    @PostMapping("/login")
+    public HttpStatus login(@RequestBody UserLoginDto userLoginDto) {
+        userLoginService.login(userLoginDto);
+        return HttpStatus.OK;
     }
 }

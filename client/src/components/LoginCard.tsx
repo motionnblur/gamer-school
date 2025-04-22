@@ -33,7 +33,22 @@ export default function LoginCard({
 
     if (mode === "login") {
       console.log("Logging in with:", { email, password });
-      // Add login API call here
+
+      const userLoginDto: UserLoginDto = {
+        userMail: email,
+        userPassword: password,
+      };
+
+      fetch("http://localhost:8080/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userLoginDto),
+      })
+        .then((response) => response.json())
+        .then((data) => console.log(data))
+        .catch((error) => console.error("Error:", error));
     } else {
       console.log("Signing up with:", { email, password });
 
@@ -49,7 +64,7 @@ export default function LoginCard({
         },
         body: JSON.stringify(userLoginDto),
       })
-        .then((response) => response.text())
+        .then((response) => response.json())
         .then((data) => console.log(data))
         .catch((error) => console.error("Error:", error));
     }

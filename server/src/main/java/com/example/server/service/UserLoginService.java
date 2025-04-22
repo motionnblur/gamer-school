@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserLoginService {
     private final UserEntityRepository userEntityRepository;
+    private final EncryptService encryptService;
 
-    public UserLoginService(UserEntityRepository userEntityRepository) {
+    public UserLoginService(UserEntityRepository userEntityRepository,
+                            EncryptService encryptService) {
         this.userEntityRepository = userEntityRepository;
+        this.encryptService = encryptService;
     }
 
     public void signUp(UserLoginDto userLoginDto) {
@@ -22,8 +25,20 @@ public class UserLoginService {
 
         UserEntity entity = new UserEntity();
         entity.setUserMail(userMail);
-        entity.setUserPassword(userPassword);
+        entity.setUserPassword(encryptService.getEncryptedPassword(userPassword));
 
         userEntityRepository.save(entity);
+    }
+    public void login(UserLoginDto userLoginDto) {
+        String userMail = userLoginDto.getUserMail();
+        String userPassword = userLoginDto.getUserPassword();
+
+        UserEntity entity = userEntityRepository.findByUserMail(userMail);
+
+        if(entity == null)
+            throw new IllegalArgumentException("User not found");
+
+        if(!encryptService.checkIfPasswordMatches(userPassword, entity.getUserPassword()))
+            throw new IllegalArgumentException("Wrong password");
     }
 }
