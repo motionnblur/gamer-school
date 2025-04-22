@@ -75,6 +75,14 @@ export default function Home() {
                 forums, and Discord.
               </Typography>
             </Grid>
+            <Grid size={6}>
+              <Typography variant="h5" gutterBottom>
+                🪄 Be a gaming wizard !
+              </Typography>
+              <Typography>
+                Become the best of the best and win exciting prizes !
+              </Typography>
+            </Grid>
           </Grid>
         </Container>
       </Box>
