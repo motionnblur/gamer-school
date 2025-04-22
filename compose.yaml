@@ -1,7 +1,36 @@
 services:
-    client:
-        build: client/
-        ports:
-            - "3000:3000"
-        volumes:
-            - ./client:/App
+  frontend:
+    build: client/
+    depends_on:
+      - backend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./client:/App
+  backend:
+    build: server/
+    depends_on:
+      - postgres
+    ports:
+      - "8080:8080"
+      - "5005:5005"
+    environment:
+      - SPRING_DATASOURCE_URL=${SPRING_DATASOURCE_URL}
+      - SPRING_DATASOURCE_USERNAME=${SPRING_DATASOURCE_USERNAME}
+      - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
+    volumes:
+      - ./server:/App
+  postgres:
+    image: postgres:17
+    restart: always
+    expose:
+      - "5432"
+    environment:
+      - POSTGRES_USER=${POSTGRES_USER}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - POSTGRES_DB=${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
