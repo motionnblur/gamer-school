@@ -10,8 +10,11 @@ import {
   Grid,
 } from "@mui/material";
 
-import LoginCard from "@/components/LoginCard";
+import LoginCard from "../pages/Login/components/LoginCard";
 import { useEffect, useState } from "react";
+import GAppBar from "@/shared/components/GAppBar";
+import { store } from "@/shared/atoms/store";
+import { Provider } from "jotai";
 
 export default function Home() {
   const [loginCardOpen, setLoginCardOpen] = useState(false);
@@ -39,21 +42,8 @@ export default function Home() {
   }, []);
 
   return (
-    <>
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            Game Mastery
-          </Typography>
-          {user ? (
-            <Button color="inherit">{user}</Button>
-          ) : (
-            <Button color="inherit" onClick={onLoginButtonClick}>
-              Login
-            </Button>
-          )}
-        </Toolbar>
-      </AppBar>
+    <Provider store={store}>
+      <GAppBar onLoginButtonClick={onLoginButtonClick} />
 
       {loginCardOpen && (
         <LoginCard
@@ -145,6 +135,6 @@ export default function Home() {
           </Typography>
         </Container>
       </Box>
-    </>
+    </Provider>
   );
 }

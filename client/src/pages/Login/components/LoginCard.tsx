@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Tabs, Tab, TextField, Button, Paper } from "@mui/material";
-import BgFiller from "./BgFiller";
-import { useAuth } from "@/hooks/useAuth";
+import BgFiller from "../../../shared/components/BgFiller";
+import { useAuth } from "../../../shared/hooks/useAuth";
 
 type AuthMode = "login" | "signup";
 

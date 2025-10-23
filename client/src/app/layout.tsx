@@ -1,8 +1,6 @@
 "use client";
 
-import type { Metadata } from "next";
 import { Roboto, Roboto_Mono } from "next/font/google";
-import "./globals.css";
 import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
 
 const roboto = Roboto({

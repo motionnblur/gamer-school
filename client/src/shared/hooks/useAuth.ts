@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { login, signup } from "@/services/authService";
+import { login, signup } from "@/shared/services/authService";
 
 type AuthMode = "login" | "signup";
 
