@@ -1,6 +1,3 @@
-import { store } from "@/shared/atoms/store";
-import { userNameAtom } from "@/shared/atoms/authAtoms";
-
 const API_BASE = "http://localhost:8080";
 
 export async function login(email: string, password: string): Promise<boolean> {
@@ -16,7 +13,6 @@ export async function login(email: string, password: string): Promise<boolean> {
     const sessionId = response.headers.get("sessionId");
     if (sessionId) {
       localStorage.setItem("sessionId", sessionId);
-      store.set(userNameAtom, email[0]);
       return true;
     }
   }

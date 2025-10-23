@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { login, signup } from "@/shared/services/authService";
+import { store } from "@/shared/atoms/store";
+import { userNameAtom } from "@/shared/atoms/authAtoms";
 
 type AuthMode = "login" | "signup";
 
@@ -27,6 +29,7 @@ export function useAuth(onLoginSuccess: (userMail: string) => void) {
       if (mode === "login") {
         success = await login(email, password);
         if (success) {
+          store.set(userNameAtom, email[0]);
           onLoginSuccess(email);
         }
       } else {
