@@ -2,6 +2,8 @@
 
 import { Roboto, Roboto_Mono } from "next/font/google";
 import { ThemeProvider, createTheme, CssBaseline } from "@mui/material";
+import { Provider } from "jotai";
+import { store } from "@/shared/atoms/store";
 
 const roboto = Roboto({
   variable: "--font-roboto",
@@ -35,7 +37,7 @@ export default function RootLayout({
       <body className={`${roboto.variable} ${robotoMono.variable}`}>
         <ThemeProvider theme={darkTheme}>
           <CssBaseline />
-          {children}
+          <Provider store={store}>{children}</Provider>
         </ThemeProvider>
       </body>
     </html>

@@ -2,35 +2,28 @@ import React, { useState } from "react";
 import { Box, Tabs, Tab, TextField, Button, Paper } from "@mui/material";
 import BgFiller from "../../../shared/components/BgFiller";
 import { handleLogin, handleSignup } from "@/shared/hooks/useAuth";
+import { openLoginCardAtom } from "@/shared/atoms/authAtoms";
+import { store } from "@/shared/atoms/store";
+import { useAuthForm } from "../hooks/useAuthForm";
 
 type AuthMode = "login" | "signup";
 
-export default function LoginCard({
-  setLoginCardOpen,
-  onLoginSuccess,
-}: {
-  setLoginCardOpen: (setter: boolean) => void;
-  onLoginSuccess: (userMail: string) => void;
-}) {
+export default function LoginCard() {
   const [mode, setMode] = useState<AuthMode>("login");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (mode === "login") {
-      let success: boolean = await handleLogin(email, password);
-      if (success) {
-        setLoginCardOpen(false);
-      }
-    } else if (mode === "signup") {
-      handleSignup(email, password);
-    }
-  };
+  const {
+    email,
+    setEmail,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    error,
+    loading,
+    handleSubmit,
+  } = useAuthForm(mode);
 
   const onBgClick = () => {
-    setLoginCardOpen(false);
+    store.set(openLoginCardAtom, false);
   };
 
   return (
@@ -49,7 +42,13 @@ export default function LoginCard({
       >
         <Paper
           elevation={3}
-          sx={{ p: 4, maxWidth: 400, mx: "auto", mt: 8, position: "relative" }}
+          sx={{
+            p: 4,
+            maxWidth: 400,
+            mx: "auto",
+            mt: 8,
+            position: "relative",
+          }}
         >
           <Tabs
             value={mode}

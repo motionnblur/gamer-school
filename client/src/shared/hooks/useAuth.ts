@@ -2,12 +2,18 @@ import { login, signup } from "@/shared/services/authService";
 import { store } from "@/shared/atoms/store";
 import { userNameAtom } from "@/shared/atoms/authAtoms";
 
-export async function handleSignup(email: string, password: string) {
+export async function handleSignup(
+  email: string,
+  password: string
+): Promise<boolean> {
   try {
     const response = await signup(email, password);
+    return true;
   } catch (err) {
     console.error("Signup error:", err);
+    return false;
   } finally {
+    return true;
   }
 }
 
@@ -20,6 +26,7 @@ export async function handleLogin(
     const sessionId = response.headers.get("sessionId");
     if (sessionId) {
       store.set(userNameAtom, email[0]);
+      localStorage.setItem("session-id", sessionId);
       localStorage.setItem("username", email[0]);
       return true;
     }
