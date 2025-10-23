@@ -1,6 +1,9 @@
 const API_BASE = "http://localhost:8080";
 
-export async function login(email: string, password: string): Promise<boolean> {
+export async function login(
+  email: string,
+  password: string
+): Promise<Response> {
   const response = await fetch(`${API_BASE}/login`, {
     method: "POST",
     headers: {
@@ -9,21 +12,13 @@ export async function login(email: string, password: string): Promise<boolean> {
     body: JSON.stringify({ userMail: email, userPassword: password }),
   });
 
-  if (response.ok) {
-    const sessionId = response.headers.get("sessionId");
-    if (sessionId) {
-      localStorage.setItem("sessionId", sessionId);
-      return true;
-    }
-  }
-
-  return false;
+  return response;
 }
 
 export async function signup(
   email: string,
   password: string
-): Promise<boolean> {
+): Promise<Response> {
   const response = await fetch(`${API_BASE}/sign`, {
     method: "POST",
     headers: {
@@ -32,5 +27,5 @@ export async function signup(
     body: JSON.stringify({ userMail: email, userPassword: password }),
   });
 
-  return response.ok;
+  return response;
 }

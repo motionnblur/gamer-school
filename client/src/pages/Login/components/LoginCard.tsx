@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Box, Tabs, Tab, TextField, Button, Paper } from "@mui/material";
 import BgFiller from "../../../shared/components/BgFiller";
-import { useAuth } from "../../../shared/hooks/useAuth";
+import { handleLogin, handleSignup } from "@/shared/hooks/useAuth";
 
 type AuthMode = "login" | "signup";
 
@@ -17,11 +17,16 @@ export default function LoginCard({
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const { handleAuth, error, loading } = useAuth(onLoginSuccess);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    handleAuth(mode, email, password, confirmPassword);
+    if (mode === "login") {
+      let success: boolean = await handleLogin(email, password);
+      if (success) {
+        setLoginCardOpen(false);
+      }
+    } else if (mode === "signup") {
+      handleSignup(email, password);
+    }
   };
 
   const onBgClick = () => {

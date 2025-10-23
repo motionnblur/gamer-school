@@ -1,13 +1,21 @@
 import { AppBar, Button, Toolbar, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { useAtom } from "jotai";
 import { userNameAtom } from "@/shared/atoms/authAtoms";
+import { store } from "@/shared/atoms/store";
 
 export default function GAppBar(
   { onLoginButtonClick }: { onLoginButtonClick: () => void },
   user?: string
 ) {
   const [userName] = useAtom(userNameAtom);
+
+  useEffect(() => {
+    const storedUserName = localStorage.getItem("username");
+    if (storedUserName) {
+      store.set(userNameAtom, storedUserName);
+    }
+  }, []);
 
   return (
     <AppBar position="static">

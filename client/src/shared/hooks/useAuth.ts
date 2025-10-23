@@ -1,55 +1,33 @@
-import { useState } from "react";
 import { login, signup } from "@/shared/services/authService";
 import { store } from "@/shared/atoms/store";
 import { userNameAtom } from "@/shared/atoms/authAtoms";
 
-type AuthMode = "login" | "signup";
-
-export function useAuth(onLoginSuccess: (userMail: string) => void) {
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleAuth(
-    mode: AuthMode,
-    email: string,
-    password: string,
-    confirmPassword?: string
-  ) {
-    setError(null);
-
-    if (mode === "signup" && password !== confirmPassword) {
-      setError("Passwords do not match!");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      let success = false;
-
-      if (mode === "login") {
-        success = await login(email, password);
-        if (success) {
-          store.set(userNameAtom, email[0]);
-          onLoginSuccess(email);
-        }
-      } else {
-        success = await signup(email, password);
-      }
-
-      if (!success) {
-        setError(
-          mode === "login"
-            ? "Login failed. Please check your credentials."
-            : "Signup failed. Please try again."
-        );
-      }
-    } catch (err) {
-      console.error("Auth error:", err);
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+export async function handleSignup(email: string, password: string) {
+  try {
+    const response = await signup(email, password);
+  } catch (err) {
+    console.error("Signup error:", err);
+  } finally {
   }
+}
 
-  return { loading, error, handleAuth };
+export async function handleLogin(
+  email: string,
+  password: string
+): Promise<boolean> {
+  try {
+    const response = await login(email, password);
+    const sessionId = response.headers.get("sessionId");
+    if (sessionId) {
+      store.set(userNameAtom, email[0]);
+      localStorage.setItem("username", email[0]);
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error("Login error:", err);
+    return false;
+  } finally {
+    return true;
+  }
 }
