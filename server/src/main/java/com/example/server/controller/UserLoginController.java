@@ -2,6 +2,7 @@ package com.example.server.controller;
 
 import com.example.server.dto.UserLoginDto;
 import com.example.server.service.UserLoginService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -23,8 +24,8 @@ public class UserLoginController {
     }
 
     @PostMapping("/login")
-    public HttpStatus login(@RequestBody UserLoginDto userLoginDto) {
-        userLoginService.login(userLoginDto);
+    public HttpStatus login(@RequestBody UserLoginDto userLoginDto, HttpServletResponse response) {
+        userLoginService.login(response, userLoginDto);
         return HttpStatus.OK;
     }
 }

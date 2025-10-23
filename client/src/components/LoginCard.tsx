@@ -1,77 +1,31 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Tabs,
-  Tab,
-  TextField,
-  Button,
-  Typography,
-  Paper,
-  Container,
-} from "@mui/material";
+import { Box, Tabs, Tab, TextField, Button, Paper } from "@mui/material";
 import BgFiller from "./BgFiller";
-import UserLoginDto from "@/dto/UserLoginDto";
+import { useAuth } from "@/hooks/useAuth";
 
 type AuthMode = "login" | "signup";
 
 export default function LoginCard({
-  setter,
+  setLoginCardOpen,
+  onLoginSuccess,
 }: {
-  setter: (setter: boolean) => void;
+  setLoginCardOpen: (setter: boolean) => void;
+  onLoginSuccess: (userMail: string) => void;
 }) {
   const [mode, setMode] = useState<AuthMode>("login");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const { handleAuth, error, loading } = useAuth(onLoginSuccess);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (mode === "signup" && password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-
-    if (mode === "login") {
-      console.log("Logging in with:", { email, password });
-
-      const userLoginDto: UserLoginDto = {
-        userMail: email,
-        userPassword: password,
-      };
-
-      fetch("http://localhost:8080/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userLoginDto),
-      })
-        .then((response) => response.json())
-        .then((data) => console.log(data))
-        .catch((error) => console.error("Error:", error));
-    } else {
-      console.log("Signing up with:", { email, password });
-
-      const userLoginDto: UserLoginDto = {
-        userMail: email,
-        userPassword: password,
-      };
-
-      fetch("http://localhost:8080/sign", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userLoginDto),
-      })
-        .then((response) => response.json())
-        .then((data) => console.log(data))
-        .catch((error) => console.error("Error:", error));
-    }
+    handleAuth(mode, email, password, confirmPassword);
   };
 
   const onBgClick = () => {
-    setter(false);
+    setLoginCardOpen(false);
   };
 
   return (
@@ -140,12 +94,6 @@ export default function LoginCard({
               {mode === "login" ? "Login" : "Sign Up"}
             </Button>
           </Box>
-
-          <Typography variant="body2" align="center" sx={{ mt: 2 }}>
-            {mode === "login"
-              ? "Don't have an account? Switch to Sign Up."
-              : "Already have an account? Switch to Login."}
-          </Typography>
         </Paper>
       </Box>
     </>

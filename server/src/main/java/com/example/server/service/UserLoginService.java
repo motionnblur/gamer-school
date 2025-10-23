@@ -3,7 +3,11 @@ package com.example.server.service;
 import com.example.server.dto.UserLoginDto;
 import com.example.server.entity.UserEntity;
 import com.example.server.repository.UserEntityRepository;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class UserLoginService {
@@ -29,7 +33,7 @@ public class UserLoginService {
 
         userEntityRepository.save(entity);
     }
-    public void login(UserLoginDto userLoginDto) {
+    public void login(HttpServletResponse response, UserLoginDto userLoginDto) {
         String userMail = userLoginDto.getUserMail();
         String userPassword = userLoginDto.getUserPassword();
 
@@ -40,5 +44,16 @@ public class UserLoginService {
 
         if(!encryptService.checkIfPasswordMatches(userPassword, entity.getUserPassword()))
             throw new IllegalArgumentException("Wrong password");
+
+        String sessionId = UUID.randomUUID().toString();
+
+        Cookie cookie = new Cookie("SESSION_ID", sessionId);
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(60 * 5); // 5 minutes
+
+        response.addCookie(cookie);
+        response.setHeader("Access-Control-Expose-Headers", "sessionId");
+        response.setHeader("sessionId", sessionId);
     }
 }

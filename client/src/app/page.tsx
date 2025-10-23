@@ -10,12 +10,12 @@ import {
   Grid,
 } from "@mui/material";
 
-import styles from "./page.module.css";
 import LoginCard from "@/components/LoginCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function Home() {
   const [loginCardOpen, setLoginCardOpen] = useState(false);
+  const [user, setUser] = useState<string | null>(null);
 
   const onJourneyButtonClick = () => {
     setLoginCardOpen(true);
@@ -24,6 +24,20 @@ export default function Home() {
     setLoginCardOpen(true);
   };
 
+  const onLoginSuccess = (userMail: string) => {
+    var firstChar: string = userMail[0];
+    setUser(firstChar);
+    localStorage.setItem("username", firstChar);
+
+    setUser(firstChar);
+    setLoginCardOpen(false);
+  };
+
+  useEffect(() => {
+    const storedUserName = localStorage.getItem("username");
+    if (storedUserName) setUser(storedUserName);
+  }, []);
+
   return (
     <>
       <AppBar position="static">
@@ -31,13 +45,22 @@ export default function Home() {
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             Game Mastery
           </Typography>
-          <Button color="inherit" onClick={onLoginButtonClick}>
-            Login
-          </Button>
+          {user ? (
+            <Button color="inherit">{user}</Button>
+          ) : (
+            <Button color="inherit" onClick={onLoginButtonClick}>
+              Login
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
 
-      {loginCardOpen && <LoginCard setter={setLoginCardOpen} />}
+      {loginCardOpen && (
+        <LoginCard
+          setLoginCardOpen={setLoginCardOpen}
+          onLoginSuccess={onLoginSuccess}
+        />
+      )}
 
       <Box
         sx={{ bgcolor: "#121212", color: "white", py: 10, textAlign: "center" }}
