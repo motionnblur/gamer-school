@@ -4,27 +4,32 @@ const initialPaths = [
   {
     id: "moba",
     name: "Moba",
-    description: "Coding, algorithms, and system design.",
+    description:
+      "Team-based strategy games focused on heroes, objectives, and coordination.",
   },
   {
     id: "fps",
     name: "Fps / Shooter",
-    description: "Machine learning, statistics, and big data analysis.",
+    description:
+      "Fast-paced action games centered on aiming, reflexes, and precision shooting.",
   },
   {
     id: "mmo",
     name: "Mmo",
-    description: "User interfaces, user experience, and visual aesthetics.",
+    description:
+      "Massively multiplayer online worlds emphasizing character progression and social interaction.",
   },
   {
     id: "strategy",
     name: "Strategy",
-    description: "Investing, budgeting, and financial planning.",
+    description:
+      "Games that emphasize planning, resource management, and tactical decision-making.",
   },
   {
     id: "racing",
     name: "Racing",
-    description: "Video games, streaming, and competitive gaming.",
+    description:
+      "High-speed competition games focused on driving skills and vehicle control.",
   },
 ];
 
