@@ -1,41 +1,11 @@
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
-
-const initialPaths = [
-  {
-    id: "moba",
-    name: "Moba",
-    description:
-      "Team-based strategy games focused on heroes, objectives, and coordination.",
-  },
-  {
-    id: "fps",
-    name: "Fps / Shooter",
-    description:
-      "Fast-paced action games centered on aiming, reflexes, and precision shooting.",
-  },
-  {
-    id: "mmo",
-    name: "Mmo",
-    description:
-      "Massively multiplayer online worlds emphasizing character progression and social interaction.",
-  },
-  {
-    id: "strategy",
-    name: "Strategy",
-    description:
-      "Games that emphasize planning, resource management, and tactical decision-making.",
-  },
-  {
-    id: "racing",
-    name: "Racing",
-    description:
-      "High-speed competition games focused on driving skills and vehicle control.",
-  },
-];
+import { pathObj } from "../data/pathData";
 
 function PathSelector() {
   const [selectedPaths, setSelectedPaths] = useState(new Set());
+  const [selectedMasters, setSelectedMasters] = useState(new Set());
+  const [nextStep, setNextStep] = useState(false);
 
   /**
    * Toggles the selection state of a path based on its ID.
@@ -46,31 +16,37 @@ function PathSelector() {
 
     if (newSelectedPaths.has(pathId)) {
       newSelectedPaths.delete(pathId);
+      pathObj.selectedPaths = pathObj.selectedPaths.filter(
+        (p) => p.id !== pathId
+      );
     } else {
       newSelectedPaths.add(pathId);
+      pathObj.selectedPaths.push(
+        pathObj.initialPaths.find((p) => p.id === pathId)
+      );
     }
 
     setSelectedPaths(newSelectedPaths);
   };
 
-  const handleNext = () => {
-    // Replace this with your next-step logic (e.g., navigate or show another component)
-    alert(
-      `You selected: ${[...selectedPaths]
-        .map((id) => initialPaths.find((p) => p.id === id).name)
-        .join(", ")}`
-    );
+  const toggleMaster = (masterId) => {
+    const newSelectedMasters = new Set(selectedMasters);
+
+    if (newSelectedMasters.has(masterId)) {
+      newSelectedMasters.delete(masterId);
+    } else {
+      newSelectedMasters.add(masterId);
+    }
+
+    setSelectedMasters(newSelectedMasters);
   };
 
-  return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        padding: 0,
-        margin: 0,
-      }}
-    >
+  const handleNext = () => {
+    setNextStep(true);
+  };
+
+  const PathRenderer = () => {
+    return (
       <div style={styles.container}>
         <h2 style={{ color: "black" }}>Choose Your Interests 🗺️</h2>
         <p style={styles.instructions}>
@@ -78,7 +54,7 @@ function PathSelector() {
         </p>
 
         <div style={styles.pathGrid}>
-          {initialPaths.map((path) => {
+          {pathObj.initialPaths.map((path) => {
             const isSelected = selectedPaths.has(path.id);
 
             return (
@@ -104,7 +80,9 @@ function PathSelector() {
           <p style={{ color: "black" }}>
             {selectedPaths.size > 0
               ? [...selectedPaths]
-                  .map((id) => initialPaths.find((p) => p.id === id).name)
+                  .map(
+                    (id) => pathObj.initialPaths.find((p) => p.id === id).name
+                  )
                   .join(" | ")
               : "No paths selected yet."}
           </p>
@@ -123,6 +101,88 @@ function PathSelector() {
           </Button>
         </div>
       </div>
+    );
+  };
+
+  const MasterRenderer = () => {
+    const allMasters: any = pathObj.selectedPaths.flatMap(
+      (path) => path.masters
+    );
+
+    // 2. Filter for unique masters to avoid duplicates
+    const uniqueMasters = allMasters.reduce((acc: any, master: any) => {
+      if (!acc.some((m: any) => m.id === master.id)) {
+        acc.push(master);
+      }
+      return acc;
+    }, []);
+
+    return (
+      <div style={styles.container}>
+        <h2 style={{ color: "black" }}>Select a master 🗺️</h2>
+        <p style={styles.instructions}>Select your masters.</p>
+
+        <div style={styles.pathGrid}>
+          {uniqueMasters.map((master) => {
+            const isSelected = selectedMasters.has(master.id);
+
+            return (
+              <div
+                key={master.id}
+                onClick={() => toggleMaster(master.id)}
+                style={{
+                  ...styles.pathCard,
+                  ...(isSelected ? styles.selected : styles.unselected),
+                }}
+              >
+                <h3 style={styles.pathName}>{master.name}</h3>
+                <p style={styles.pathDescription}>{master.description}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        <hr style={styles.divider} />
+
+        {/* Display the final selection */}
+        <div style={styles.summary}>
+          <p style={{ color: "black" }}>
+            {selectedPaths.size > 0
+              ? [...selectedPaths]
+                  .map(
+                    (id) => pathObj.initialPaths.find((p) => p.id === id).name
+                  )
+                  .join(" | ")
+              : "No paths selected yet."}
+          </p>
+        </div>
+
+        {/* ✅ Next Button Section */}
+        <div style={styles.buttonContainer}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={handleNext}
+            disabled={selectedPaths.size === 0}
+          >
+            Next →
+          </Button>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        padding: 0,
+        margin: 0,
+      }}
+    >
+      {!nextStep ? <PathRenderer /> : <MasterRenderer />}
     </div>
   );
 }
