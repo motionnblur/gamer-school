@@ -39,7 +39,7 @@ export default function Home() {
     <>
       <GAppBar />
       {!isLoggedIn && showLoginPage && <LoginPage />}
-      {isLoggedInAtom && <Path />}
+      {isLoggedIn && <Path />}
     </>
   );
 }
