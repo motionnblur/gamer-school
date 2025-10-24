@@ -11,6 +11,7 @@ import {
   getSessionId,
   getUserName,
 } from "@/shared/services/authService";
+import Path from "@/pages/Path/components/Path";
 
 export default function Home() {
   const isLoggedIn = useAtomValue(isLoggedInAtom);
@@ -22,6 +23,7 @@ export default function Home() {
     const storedUserName = getUserName();
     if (sessionId && storedUserName) {
       store.set(userNameAtom, storedUserName);
+      store.set(isLoggedInAtom, true);
       setShowLoginPage(false);
     } else {
       clearSession();
@@ -37,6 +39,7 @@ export default function Home() {
     <>
       <GAppBar />
       {!isLoggedIn && showLoginPage && <LoginPage />}
+      {isLoggedInAtom && <Path />}
     </>
   );
 }
