@@ -63,54 +63,65 @@ function PathSelector() {
   };
 
   return (
-    <div style={styles.container}>
-      <h2 style={{ color: "black" }}>Choose Your Interests 🗺️</h2>
-      <p style={styles.instructions}>Select all the paths that interest you.</p>
-
-      <div style={styles.pathGrid}>
-        {initialPaths.map((path) => {
-          const isSelected = selectedPaths.has(path.id);
-
-          return (
-            <div
-              key={path.id}
-              onClick={() => togglePath(path.id)}
-              style={{
-                ...styles.pathCard,
-                ...(isSelected ? styles.selected : styles.unselected),
-              }}
-            >
-              <h3 style={styles.pathName}>{path.name}</h3>
-              <p style={styles.pathDescription}>{path.description}</p>
-            </div>
-          );
-        })}
-      </div>
-
-      <hr style={styles.divider} />
-
-      {/* Display the final selection */}
-      <div style={styles.summary}>
-        <p style={{ color: "black" }}>
-          {selectedPaths.size > 0
-            ? [...selectedPaths]
-                .map((id) => initialPaths.find((p) => p.id === id).name)
-                .join(" | ")
-            : "No paths selected yet."}
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        padding: 0,
+        margin: 0,
+      }}
+    >
+      <div style={styles.container}>
+        <h2 style={{ color: "black" }}>Choose Your Interests 🗺️</h2>
+        <p style={styles.instructions}>
+          Select all the paths that interest you.
         </p>
-      </div>
 
-      {/* ✅ Next Button Section */}
-      <div style={styles.buttonContainer}>
-        <Button
-          variant="contained"
-          color="primary"
-          size="large"
-          onClick={handleNext}
-          disabled={selectedPaths.size === 0}
-        >
-          Next →
-        </Button>
+        <div style={styles.pathGrid}>
+          {initialPaths.map((path) => {
+            const isSelected = selectedPaths.has(path.id);
+
+            return (
+              <div
+                key={path.id}
+                onClick={() => togglePath(path.id)}
+                style={{
+                  ...styles.pathCard,
+                  ...(isSelected ? styles.selected : styles.unselected),
+                }}
+              >
+                <h3 style={styles.pathName}>{path.name}</h3>
+                <p style={styles.pathDescription}>{path.description}</p>
+              </div>
+            );
+          })}
+        </div>
+
+        <hr style={styles.divider} />
+
+        {/* Display the final selection */}
+        <div style={styles.summary}>
+          <p style={{ color: "black" }}>
+            {selectedPaths.size > 0
+              ? [...selectedPaths]
+                  .map((id) => initialPaths.find((p) => p.id === id).name)
+                  .join(" | ")
+              : "No paths selected yet."}
+          </p>
+        </div>
+
+        {/* ✅ Next Button Section */}
+        <div style={styles.buttonContainer}>
+          <Button
+            variant="contained"
+            color="primary"
+            size="large"
+            onClick={handleNext}
+            disabled={selectedPaths.size === 0}
+          >
+            Next →
+          </Button>
+        </div>
       </div>
     </div>
   );
@@ -118,13 +129,15 @@ function PathSelector() {
 
 const styles = {
   container: {
-    maxWidth: "800px",
-    margin: "10px auto",
-    padding: "20px",
+    maxWidth: "1200px",
+    margin: "0 auto",
     fontFamily: "Arial, sans-serif",
     backgroundColor: "#f9f9f9",
     borderRadius: "8px",
     boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
+    boxSizing: "border-box",
+    padding: "20px",
+    marginTop: "20px",
   },
   instructions: {
     color: "#666",
@@ -179,6 +192,9 @@ const styles = {
     backgroundColor: "#fff",
     borderRadius: "6px",
     border: "1px solid #ddd",
+    height: "64px",
+    display: "flex",
+    alignItems: "center",
   },
   buttonContainer: {
     textAlign: "right",
