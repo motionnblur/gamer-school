@@ -6,6 +6,11 @@ import { Provider, useAtomValue } from "jotai";
 import LoginPage from "@/pages/Login/components/LoginPage";
 import { useEffect, useState } from "react";
 import { userNameAtom, isLoggedInAtom } from "@/shared/atoms/authAtoms";
+import {
+  clearSession,
+  getSessionId,
+  getUserName,
+} from "@/shared/services/authService";
 
 export default function Home() {
   const isLoggedIn = useAtomValue(isLoggedInAtom);
@@ -13,11 +18,13 @@ export default function Home() {
   const [showLoginPage, setShowLoginPage] = useState(true);
 
   useEffect(() => {
-    const sessionId = localStorage.getItem("session-id");
-    if (sessionId) {
-      const storedUserName = localStorage.getItem("username");
-      if (storedUserName) store.set(userNameAtom, storedUserName);
+    const sessionId = getSessionId();
+    const storedUserName = getUserName();
+    if (sessionId && storedUserName) {
+      store.set(userNameAtom, storedUserName);
       setShowLoginPage(false);
+    } else {
+      clearSession();
     }
     setIsLoading(false);
   }, []);
