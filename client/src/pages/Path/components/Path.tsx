@@ -1,3 +1,4 @@
+import Button from "@mui/material/Button";
 import React, { useState } from "react";
 
 const initialPaths = [
@@ -40,7 +41,7 @@ function PathSelector() {
    * Toggles the selection state of a path based on its ID.
    * @param {string} pathId - The unique ID of the path to toggle.
    */
-  const togglePath = (pathId: string) => {
+  const togglePath = (pathId) => {
     const newSelectedPaths = new Set(selectedPaths);
 
     if (newSelectedPaths.has(pathId)) {
@@ -50,6 +51,15 @@ function PathSelector() {
     }
 
     setSelectedPaths(newSelectedPaths);
+  };
+
+  const handleNext = () => {
+    // Replace this with your next-step logic (e.g., navigate or show another component)
+    alert(
+      `You selected: ${[...selectedPaths]
+        .map((id) => initialPaths.find((p) => p.id === id).name)
+        .join(", ")}`
+    );
   };
 
   return (
@@ -88,6 +98,19 @@ function PathSelector() {
                 .join(" | ")
             : "No paths selected yet."}
         </p>
+      </div>
+
+      {/* ✅ Next Button Section */}
+      <div style={styles.buttonContainer}>
+        <Button
+          variant="contained"
+          color="primary"
+          size="large"
+          onClick={handleNext}
+          disabled={selectedPaths.size === 0}
+        >
+          Next →
+        </Button>
       </div>
     </div>
   );
@@ -128,9 +151,6 @@ const styles = {
     backgroundColor: "#fff",
     borderColor: "#ccc",
     boxShadow: "0 2px 4px rgba(0, 0, 0, 0.05)",
-    "&:hover": {
-      borderColor: "#aaa",
-    },
   },
   selected: {
     backgroundColor: "#e6f7ff", // Light blue background
@@ -149,12 +169,6 @@ const styles = {
     flexGrow: "1",
     marginBottom: "10px",
   },
-  statusBadge: {
-    alignSelf: "flex-end",
-    fontSize: "0.8em",
-    fontWeight: "bold",
-    color: "#1890ff",
-  },
   divider: {
     margin: "20px 0",
     border: "0",
@@ -165,6 +179,24 @@ const styles = {
     backgroundColor: "#fff",
     borderRadius: "6px",
     border: "1px solid #ddd",
+  },
+  buttonContainer: {
+    textAlign: "right",
+    marginTop: "20px",
+  },
+  nextButton: {
+    backgroundColor: "#1890ff",
+    color: "white",
+    border: "none",
+    padding: "10px 20px",
+    fontSize: "1em",
+    borderRadius: "6px",
+    cursor: "pointer",
+    transition: "background-color 0.2s ease",
+  },
+  disabledButton: {
+    backgroundColor: "#ccc",
+    cursor: "not-allowed",
   },
 };
 
