@@ -38,8 +38,18 @@ export default function Home() {
   return (
     <>
       <GAppBar />
-      {!isLoggedIn && showLoginPage && <LoginPage />}
-      {isLoggedIn && <Path />}
+      <div
+        style={{
+          width: "100%",
+          height: "100%",
+          padding: "10px",
+          boxSizing: "border-box",
+          marginTop: "46px",
+        }}
+      >
+        {!isLoggedIn && showLoginPage && <LoginPage />}
+        {isLoggedIn && <Path />}
+      </div>
     </>
   );
 }
