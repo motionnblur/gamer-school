@@ -1,7 +1,10 @@
 import React, { useState } from "react";
 import { Box, Tabs, Tab, TextField, Button, Paper } from "@mui/material";
-import BgFiller from "../../../shared/components/BgFiller";
-import { handleLogin, handleSignup } from "@/shared/hooks/useAuth";
+import BgFiller from "../../../../../shared/components/BgFiller";
+import {
+  handleLogin,
+  handleSignup,
+} from "@/domains/user/pages/Login/hooks/useAuth";
 import { openLoginCardAtom } from "@/shared/atoms/authAtoms";
 import { store } from "@/shared/atoms/store";
 import { useAuthForm } from "../hooks/useAuthForm";

@@ -1,4 +1,4 @@
-import { login, signup } from "@/shared/services/authService";
+import { login, signup } from "../services/loginService";
 import { store } from "@/shared/atoms/store";
 import { userNameAtom } from "@/shared/atoms/authAtoms";
 

@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { handleLogin, handleSignup } from "@/shared/hooks/useAuth"; // Assuming useAuth.ts is nearby
+import {
+  handleLogin,
+  handleSignup,
+} from "@/domains/user/pages/Login/hooks/useAuth"; // Assuming useAuth.ts is nearby
 import { openLoginCardAtom } from "@/shared/atoms/authAtoms";
 import { isLoggedInAtom } from "@/shared/atoms/authAtoms";
 import { store } from "@/shared/atoms/store";

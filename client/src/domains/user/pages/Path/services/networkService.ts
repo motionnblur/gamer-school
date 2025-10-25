@@ -1,5 +1,3 @@
-const http = require("http");
-
 class NetworkService {
   public async sendSessionId(sessionId: string): Promise<void> {
     const response = await fetch("http://localhost:8080/session", {

@@ -1,17 +1,17 @@
 "use client";
 
-import GAppBar from "@/shared/components/GAppBar";
+import GAppBar from "@/domains/user/shared/components/GAppBar";
 import { store } from "@/shared/atoms/store";
-import { Provider, useAtomValue } from "jotai";
-import LoginPage from "@/pages/Login/components/LoginPage";
+import { useAtomValue } from "jotai";
+import LoginPage from "@/domains/user/pages/Login/components/LoginPage";
 import { useEffect, useState } from "react";
 import { userNameAtom, isLoggedInAtom } from "@/shared/atoms/authAtoms";
 import {
   clearSession,
   getSessionId,
   getUserName,
-} from "@/shared/services/authService";
-import Path from "@/pages/Path/components/Path";
+} from "@/domains/user/shared/services/authService";
+import Path from "@/domains/user/pages/Path/components/Path";
 
 export default function Home() {
   const isLoggedIn = useAtomValue(isLoggedInAtom);
