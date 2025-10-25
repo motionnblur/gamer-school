@@ -50,6 +50,13 @@ function PathSelector() {
   const handleNext = () => {
     setNextStep(true);
   };
+  const handleFinish = async () => {
+    const response = await fetch("http://localhost:8080/test", {
+      method: "GET",
+      credentials: "include", // <--- this is key
+    });
+    console.log(response.ok);
+  };
 
   const PathRenderer = () => {
     return (
@@ -165,7 +172,7 @@ function PathSelector() {
             variant="contained"
             color="primary"
             size="large"
-            onClick={handleNext}
+            onClick={handleFinish}
             disabled={selectedPaths.size === 0}
           >
             Next →

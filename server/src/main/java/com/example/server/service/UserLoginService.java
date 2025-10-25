@@ -13,11 +13,14 @@ import java.util.UUID;
 public class UserLoginService {
     private final UserEntityRepository userEntityRepository;
     private final EncryptService encryptService;
+    private final SessionService sessionService;
 
     public UserLoginService(UserEntityRepository userEntityRepository,
-                            EncryptService encryptService) {
+                            EncryptService encryptService,
+                            SessionService sessionService) {
         this.userEntityRepository = userEntityRepository;
         this.encryptService = encryptService;
+        this.sessionService = sessionService;
     }
 
     public void signUp(UserLoginDto userLoginDto) {
@@ -49,11 +52,12 @@ public class UserLoginService {
 
         Cookie cookie = new Cookie("SESSION_ID", sessionId);
         cookie.setHttpOnly(true);
+        cookie.setSecure(false);
         cookie.setPath("/");
-        cookie.setMaxAge(60 * 5); // 5 minutes
+        cookie.setAttribute("SameSite", "Lax");
+
+        sessionService.addSession(sessionId, userMail);
 
         response.addCookie(cookie);
-        response.setHeader("Access-Control-Expose-Headers", "sessionId");
-        response.setHeader("sessionId", sessionId);
     }
 }

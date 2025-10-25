@@ -23,10 +23,8 @@ export async function handleLogin(
 ): Promise<boolean> {
   try {
     const response = await login(email, password);
-    const sessionId = response.headers.get("sessionId");
-    if (sessionId) {
+    if (response.ok) {
       store.set(userNameAtom, email[0]);
-      localStorage.setItem("session-id", sessionId);
       localStorage.setItem("username", email[0]);
       return true;
     }

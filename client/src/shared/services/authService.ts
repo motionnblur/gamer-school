@@ -10,6 +10,7 @@ export async function login(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ userMail: email, userPassword: password }),
+    credentials: "include",
   });
 
   return response;
