@@ -1,6 +1,7 @@
 import Button from "@mui/material/Button";
 import React, { useState } from "react";
 import { pathObj } from "../data/pathData";
+import { IUserPathDto } from "../dto/IUserPathDto";
 
 function PathSelector() {
   const [selectedPaths, setSelectedPaths] = useState(new Set());
@@ -51,11 +52,19 @@ function PathSelector() {
     setNextStep(true);
   };
   const handleFinish = async () => {
-    const response = await fetch("http://localhost:8080/test", {
-      method: "GET",
-      credentials: "include", // <--- this is key
+    const selectedUserPaths: IUserPathDto = {
+      selectedPaths: pathObj.selectedPaths,
+      selectedMasters: pathObj.selectedMasters,
+    };
+
+    const response = await fetch("http://localhost:8080/set-user-path", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(selectedUserPaths),
+      credentials: "include",
     });
-    console.log(response.ok);
   };
 
   const PathRenderer = () => {
