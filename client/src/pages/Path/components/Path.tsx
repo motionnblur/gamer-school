@@ -33,8 +33,14 @@ function PathSelector() {
     const newSelectedMasters = new Set(selectedMasters);
 
     if (newSelectedMasters.has(masterId)) {
+      pathObj.selectedMasters = pathObj.selectedMasters.filter(
+        (m) => m.id !== masterId
+      );
       newSelectedMasters.delete(masterId);
     } else {
+      pathObj.selectedMasters.push(
+        pathObj.masters.find((m) => m.id === masterId)
+      );
       newSelectedMasters.add(masterId);
     }
 
@@ -147,13 +153,9 @@ function PathSelector() {
         {/* Display the final selection */}
         <div style={styles.summary}>
           <p style={{ color: "black" }}>
-            {selectedPaths.size > 0
-              ? [...selectedPaths]
-                  .map(
-                    (id) => pathObj.initialPaths.find((p) => p.id === id).name
-                  )
-                  .join(" | ")
-              : "No paths selected yet."}
+            {pathObj.selectedMasters.length > 0
+              ? [...pathObj.selectedMasters].map((m) => m.name).join(" | ")
+              : "No masters selected yet."}
           </p>
         </div>
 

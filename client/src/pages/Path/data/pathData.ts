@@ -11,9 +11,10 @@ interface Master {
 }
 
 class PathObj {
-  public selectedPaths: Path[] = [];
   public masters: Master[] = [];
   public initialPaths: Path[] = [];
+  public selectedPaths: Path[] = [];
+  public selectedMasters: Master[] = [];
 
   constructor() {
     this.masters = [
