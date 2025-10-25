@@ -1,13 +1,16 @@
 import React, { useState } from "react";
 import { Box, Tabs, Tab, TextField, Button, Paper } from "@mui/material";
 import BgFiller from "../../../../../shared/components/BgFiller";
-import { openLoginCardAtom } from "@/shared/atoms/authAtoms";
+import {
+  openLoginCardAtom,
+  openLoginMasterCardAtom,
+} from "@/shared/atoms/authAtoms";
 import { store } from "@/shared/atoms/store";
 import { useAuthForm } from "../hooks/useAuthForm";
 
 type AuthMode = "login" | "signup";
 
-export default function LoginCard() {
+export default function LoginCardMaster() {
   const [mode, setMode] = useState<AuthMode>("login");
   const {
     email,
@@ -22,7 +25,7 @@ export default function LoginCard() {
   } = useAuthForm(mode);
 
   const onBgClick = () => {
-    store.set(openLoginCardAtom, false);
+    store.set(openLoginMasterCardAtom, false);
   };
 
   return (
@@ -49,17 +52,6 @@ export default function LoginCard() {
             position: "relative",
           }}
         >
-          <Tabs
-            value={mode}
-            onChange={(_, newValue) => setMode(newValue)}
-            centered
-            textColor="primary"
-            indicatorColor="primary"
-          >
-            <Tab label="Login" value="login" />
-            <Tab label="Sign Up" value="signup" />
-          </Tabs>
-
           <Box component="form" onSubmit={handleSubmit}>
             <TextField
               fullWidth

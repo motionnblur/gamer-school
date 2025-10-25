@@ -1,22 +1,34 @@
 import React, { useEffect, useState } from "react";
 import LoginCard from "./LoginCard";
 import { Box, Button, Container, Grid, Typography } from "@mui/material";
-import { openLoginCardAtom, isLoggedInAtom } from "@/shared/atoms/authAtoms";
+import {
+  openLoginCardAtom,
+  openLoginMasterCardAtom,
+  isLoggedInAtom,
+} from "@/shared/atoms/authAtoms";
 import { store } from "@/shared/atoms/store";
 import { useAtomValue } from "jotai";
+import LoginCardMaster from "./LoginCardMaster";
 
 export default function LoginPage() {
   const isLoggedIn = useAtomValue(isLoggedInAtom);
   const showLoginCard = useAtomValue(openLoginCardAtom);
+  const showLoginMasterCard = useAtomValue(openLoginMasterCardAtom);
   const onJourneyButtonClick = () => {
     if (!isLoggedIn) {
       store.set(openLoginCardAtom, true);
+    }
+  };
+  const onMasterButtonClick = () => {
+    if (!isLoggedIn) {
+      store.set(openLoginMasterCardAtom, true);
     }
   };
 
   return (
     <>
       {!isLoggedIn && showLoginCard && <LoginCard />}
+      {showLoginMasterCard && <LoginCardMaster />}
 
       <Box
         sx={{ bgcolor: "#121212", color: "white", py: 10, textAlign: "center" }}
@@ -29,14 +41,39 @@ export default function LoginPage() {
             Learn from top-tier pro gamers, watch exclusive content, and join
             live streams.
           </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            size="large"
-            onClick={onJourneyButtonClick}
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
-            Start Your Journey
-          </Button>
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "10px",
+                width: 2 / 4,
+              }}
+            >
+              <Button
+                variant="contained"
+                color="primary"
+                size="large"
+                onClick={onJourneyButtonClick}
+              >
+                Start Your Journey
+              </Button>
+              <Button
+                variant="contained"
+                color="info"
+                size="large"
+                onClick={onMasterButtonClick}
+              >
+                I'm already a master !
+              </Button>
+            </Box>
+          </Box>
         </Container>
       </Box>
 
