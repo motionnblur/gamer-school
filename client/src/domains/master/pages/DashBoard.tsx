@@ -32,9 +32,8 @@ export default function DashBoard() {
               color: "black",
               justifyContent: "flex-start",
               textAlign: "left",
-              backgroundColor:
-                disabledButton === "dashboard" ? "#deebff" : "white",
               pointerEvents: disabledButton === "dashboard" ? "none" : "auto",
+              boxShadow: disabledButton === "dashboard" ? 1 : 0,
             }}
           >
             Dashboard
@@ -46,9 +45,8 @@ export default function DashBoard() {
               color: "black",
               justifyContent: "flex-start",
               textAlign: "left",
-              backgroundColor:
-                disabledButton === "profile" ? "#deebff" : "white",
               pointerEvents: disabledButton === "profile" ? "none" : "auto",
+              boxShadow: disabledButton === "profile" ? 1 : 0,
             }}
           >
             Profile
@@ -60,9 +58,8 @@ export default function DashBoard() {
               color: "black",
               justifyContent: "flex-start",
               textAlign: "left",
-              backgroundColor:
-                disabledButton === "videos" ? "#deebff" : "white",
               pointerEvents: disabledButton === "videos" ? "none" : "auto",
+              boxShadow: disabledButton === "videos" ? 1 : 0,
             }}
           >
             Videos
@@ -70,8 +67,24 @@ export default function DashBoard() {
         </Stack>
       </Box>
       <Box
-        sx={{ width: "100%", height: "100%", backgroundColor: "#b8e5ff" }}
-      ></Box>
+        sx={{
+          width: "100%",
+          height: "100%",
+          backgroundColor: "#ebf2f6",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        <Stack
+          sx={{
+            width: "96%",
+            height: "96%",
+            backgroundColor: "white",
+            borderRadius: "5px",
+          }}
+        ></Stack>
+      </Box>
     </Stack>
   );
 }
