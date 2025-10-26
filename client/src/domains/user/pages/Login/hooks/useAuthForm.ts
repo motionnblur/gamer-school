@@ -1,9 +1,13 @@
 import { useState } from "react";
 import {
   handleLogin,
+  handleLoginMaster,
   handleSignup,
 } from "@/domains/user/pages/Login/hooks/useAuth"; // Assuming useAuth.ts is nearby
-import { openLoginCardAtom } from "@/shared/atoms/authAtoms";
+import {
+  isMasterLoggedInAtom,
+  openLoginCardAtom,
+} from "@/shared/atoms/authAtoms";
 import { isLoggedInAtom } from "@/shared/atoms/authAtoms";
 import { store } from "@/shared/atoms/store";
 
@@ -53,6 +57,39 @@ export function useAuthForm(mode: AuthMode) {
     setPassword,
     confirmPassword,
     setConfirmPassword,
+    error,
+    loading,
+    handleSubmit,
+  };
+}
+
+export function useAuthFormMaster(mode: AuthMode) {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const success: boolean = await handleLoginMaster(email, password);
+
+    if (success) {
+      store.set(isMasterLoggedInAtom, true);
+    } else {
+      setError("Login failed. Invalid credentials.");
+    }
+
+    setLoading(false);
+  };
+
+  return {
+    email,
+    setEmail,
+    password,
+    setPassword,
     error,
     loading,
     handleSubmit,

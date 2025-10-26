@@ -57,7 +57,7 @@ function PathSelector() {
       selectedMasters: pathObj.selectedMasters,
     };
 
-    const response = await fetch("http://localhost:8080/set-user-path", {
+    const response = await fetch("http://localhost:8080/user/set-user-path", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

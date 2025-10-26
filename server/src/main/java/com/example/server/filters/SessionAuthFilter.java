@@ -30,7 +30,7 @@ public class SessionAuthFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
             return;
         }
-        if (path.equals("/login") || path.equals("/sign")) {
+        if (path.equals("/master/login") || path.equals("/user/login") || path.equals("/user/sign")) {
             filterChain.doFilter(request, response);
             return;
         }

@@ -1,4 +1,4 @@
-package com.example.server.dto.userpath;
+package com.example.server.dto.user.userpath;
 
 import lombok.Getter;
 import lombok.Setter;

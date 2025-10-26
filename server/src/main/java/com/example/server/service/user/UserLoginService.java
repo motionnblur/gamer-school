@@ -1,8 +1,10 @@
-package com.example.server.service;
+package com.example.server.service.user;
 
-import com.example.server.dto.UserLoginDto;
+import com.example.server.dto.user.UserLoginDto;
 import com.example.server.entity.UserEntity;
 import com.example.server.repository.UserEntityRepository;
+import com.example.server.service.EncryptService;
+import com.example.server.service.SessionService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;

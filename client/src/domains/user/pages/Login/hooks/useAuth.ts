@@ -1,4 +1,4 @@
-import { login, signup } from "../services/loginService";
+import { login, loginMaster, signup } from "../services/loginService";
 import { store } from "@/shared/atoms/store";
 import { userNameAtom } from "@/shared/atoms/authAtoms";
 
@@ -26,6 +26,24 @@ export async function handleLogin(
     if (response.ok) {
       store.set(userNameAtom, email[0]);
       localStorage.setItem("username", email[0]);
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.error("Login error:", err);
+    return false;
+  } finally {
+    return true;
+  }
+}
+
+export async function handleLoginMaster(
+  email: string,
+  password: string
+): Promise<boolean> {
+  try {
+    const response = await loginMaster(email, password);
+    if (response.ok) {
       return true;
     }
     return false;

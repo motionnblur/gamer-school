@@ -1,28 +1,23 @@
-import React, { useState } from "react";
-import { Box, Tabs, Tab, TextField, Button, Paper } from "@mui/material";
+import React from "react";
+import { Box, TextField, Button, Paper } from "@mui/material";
 import BgFiller from "../../../../../shared/components/BgFiller";
 import {
   openLoginCardAtom,
   openLoginMasterCardAtom,
 } from "@/shared/atoms/authAtoms";
 import { store } from "@/shared/atoms/store";
-import { useAuthForm } from "../hooks/useAuthForm";
-
-type AuthMode = "login" | "signup";
+import { useAuthFormMaster } from "../hooks/useAuthForm";
 
 export default function LoginCardMaster() {
-  const [mode, setMode] = useState<AuthMode>("login");
   const {
     email,
     setEmail,
     password,
     setPassword,
-    confirmPassword,
-    setConfirmPassword,
     error,
     loading,
     handleSubmit,
-  } = useAuthForm(mode);
+  } = useAuthFormMaster("login");
 
   const onBgClick = () => {
     store.set(openLoginMasterCardAtom, false);
@@ -56,8 +51,8 @@ export default function LoginCardMaster() {
             <TextField
               fullWidth
               required
-              label="Email"
-              type="email"
+              label="Master id"
+              type="text"
               margin="normal"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -73,20 +68,8 @@ export default function LoginCardMaster() {
               onChange={(e) => setPassword(e.target.value)}
             />
 
-            {mode === "signup" && (
-              <TextField
-                fullWidth
-                required
-                label="Confirm Password"
-                type="password"
-                margin="normal"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
-            )}
-
             <Button fullWidth variant="contained" type="submit" sx={{ mt: 2 }}>
-              {mode === "login" ? "Login" : "Sign Up"}
+              Login
             </Button>
           </Box>
         </Paper>

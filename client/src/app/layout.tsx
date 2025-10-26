@@ -25,6 +25,11 @@ const darkTheme = createTheme({
       main: "#f48fb1",
     },
   },
+  typography: {
+    button: {
+      textTransform: "none",
+    },
+  },
 });
 
 export default function RootLayout({
