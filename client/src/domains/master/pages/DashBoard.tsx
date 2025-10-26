@@ -4,9 +4,14 @@ import TvIcon from "@mui/icons-material/Tv";
 import PersonIcon from "@mui/icons-material/Person";
 import TheatersIcon from "@mui/icons-material/Theaters";
 
-import React from "react";
+import React, { useState } from "react";
 
 export default function DashBoard() {
+  const [disabledButton, setDisabledButton] = useState<String>("dashboard");
+  const handleClick = (buttonName: String) => {
+    setDisabledButton(buttonName);
+  };
+
   return (
     <Stack direction={"row"} width={"100%"} height={"100vh"}>
       <Box
@@ -21,91 +26,46 @@ export default function DashBoard() {
       >
         <Stack direction={"column"} width={"80%"} height={"86%"} spacing={2}>
           <Button
+            onClick={() => handleClick("dashboard")}
             startIcon={<TvIcon />}
             sx={{
               color: "black",
               justifyContent: "flex-start",
               textAlign: "left",
-              pointerEvents: "none",
-              backgroundColor: "#f0f0f0",
+              backgroundColor:
+                disabledButton === "dashboard" ? "#deebff" : "white",
+              pointerEvents: disabledButton === "dashboard" ? "none" : "auto",
             }}
           >
             Dashboard
           </Button>
           <Button
+            onClick={() => handleClick("profile")}
             startIcon={<PersonIcon />}
             sx={{
               color: "black",
               justifyContent: "flex-start",
               textAlign: "left",
+              backgroundColor:
+                disabledButton === "profile" ? "#deebff" : "white",
+              pointerEvents: disabledButton === "profile" ? "none" : "auto",
             }}
           >
             Profile
           </Button>
           <Button
+            onClick={() => handleClick("videos")}
             startIcon={<TheatersIcon />}
             sx={{
               color: "black",
               justifyContent: "flex-start",
               textAlign: "left",
+              backgroundColor:
+                disabledButton === "videos" ? "#deebff" : "white",
+              pointerEvents: disabledButton === "videos" ? "none" : "auto",
             }}
           >
             Videos
-          </Button>
-          <Button
-            startIcon={<DeleteIcon />}
-            sx={{
-              color: "black",
-              justifyContent: "flex-start",
-              textAlign: "left",
-            }}
-          >
-            Button
-          </Button>
-          <Button
-            startIcon={<DeleteIcon />}
-            sx={{
-              color: "black",
-              justifyContent: "flex-start",
-              textAlign: "left",
-            }}
-          >
-            Button
-          </Button>
-          <Divider
-            component="div"
-            role="presentation"
-            sx={{ backgroundColor: "#f0f0f0", height: "4px" }}
-          />
-          <Button
-            startIcon={<DeleteIcon />}
-            sx={{
-              color: "black",
-              justifyContent: "flex-start",
-              textAlign: "left",
-            }}
-          >
-            Button
-          </Button>
-          <Button
-            startIcon={<DeleteIcon />}
-            sx={{
-              color: "black",
-              justifyContent: "flex-start",
-              textAlign: "left",
-            }}
-          >
-            Button
-          </Button>
-          <Button
-            startIcon={<DeleteIcon />}
-            sx={{
-              color: "black",
-              justifyContent: "flex-start",
-              textAlign: "left",
-            }}
-          >
-            Button
           </Button>
         </Stack>
       </Box>
