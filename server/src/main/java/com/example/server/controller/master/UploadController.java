@@ -17,7 +17,7 @@ import java.nio.file.Files;
 @RequestMapping("/master")
 public class UploadController {
     @PostMapping("/upload-chunk")
-    public ResponseEntity<String> uploadChunk(
+    public HttpStatus uploadChunk(
             @RequestParam("file") MultipartFile chunk,
             @RequestParam("fileId") String fileId,
             @RequestParam("chunkNumber") int chunkNumber,
@@ -44,13 +44,13 @@ public class UploadController {
                     }
                 }
                 tempDir.delete();
-                return ResponseEntity.ok("Upload complete: " + finalFile.getName());
+                return HttpStatus.OK;
             }
 
-            return ResponseEntity.ok("Chunk " + chunkNumber + " uploaded");
+            return HttpStatus.BAD_REQUEST;
         } catch (IOException e) {
             e.printStackTrace();
-            return ResponseEntity.internalServerError().body("Error uploading chunk");
+            return HttpStatus.BAD_REQUEST;
         }
     }
 
