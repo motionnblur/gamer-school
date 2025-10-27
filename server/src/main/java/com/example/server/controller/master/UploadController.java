@@ -21,14 +21,15 @@ public class UploadController {
 
     @PostMapping("/upload-chunk")
     public HttpStatus uploadChunk(
+            @RequestParam("userId") String userId,
             @RequestParam("file") MultipartFile chunk,
             @RequestParam("fileId") String fileId,
             @RequestParam("chunkNumber") int chunkNumber,
             @RequestParam("totalChunks") int totalChunks) {
 
         try {
-            uploadService.handleUpload(chunk, fileId, chunkNumber, totalChunks);
-            return HttpStatus.BAD_REQUEST;
+            uploadService.handleUpload(userId, chunk, fileId, chunkNumber, totalChunks);
+            return HttpStatus.OK;
         } catch (IOException e) {
             e.printStackTrace();
             return HttpStatus.BAD_REQUEST;

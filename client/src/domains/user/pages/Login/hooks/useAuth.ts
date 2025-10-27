@@ -44,6 +44,7 @@ export async function handleLoginMaster(
   try {
     const response = await loginMaster(email, password);
     if (response.ok) {
+      localStorage.setItem("user_id", email);
       return true;
     }
     return false;

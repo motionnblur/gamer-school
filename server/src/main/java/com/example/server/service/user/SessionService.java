@@ -24,4 +24,9 @@ public class SessionService implements ISessionService {
         return activeSessions.get(sessionId);
     }
 
+    @Override
+    public String getMasterId(String sessionId) {
+        return activeSessions.get(sessionId);
+    }
+
 }

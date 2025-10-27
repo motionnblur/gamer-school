@@ -37,6 +37,7 @@ const VideoUploader: React.FC<VideoUploadProps> = ({ onUpload }) => {
     setUploading(true);
     setProgress(0);
 
+    const userId: string | null = localStorage.getItem("user_id");
     const totalChunks = Math.ceil(videoFile.size / CHUNK_SIZE);
     const fileId = `${videoFile.name}-${Date.now()}`; // unique identifier
 
@@ -47,6 +48,7 @@ const VideoUploader: React.FC<VideoUploadProps> = ({ onUpload }) => {
         const chunk = videoFile.slice(start, end);
 
         const formData = new FormData();
+        formData.append("userId", userId!);
         formData.append("file", chunk);
         formData.append("fileId", fileId);
         formData.append("chunkNumber", String(i));
