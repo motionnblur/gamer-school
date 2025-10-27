@@ -1,6 +1,6 @@
 package com.example.server.filters;
 
-import com.example.server.service.SessionService;
+import com.example.server.service.interfaces.ISessionService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
@@ -13,9 +13,12 @@ import java.io.IOException;
 
 @Component
 public class SessionAuthFilter extends OncePerRequestFilter {
-    private final SessionService sessionService;
-    public SessionAuthFilter(SessionService sessionService) {
-        this.sessionService = sessionService;
+    private final ISessionService userSessionService;
+    private final ISessionService masterSessionService;
+    public SessionAuthFilter(com.example.server.service.user.SessionService userSessionService,
+                             com.example.server.service.master.SessionService masterSessionService) {
+        this.userSessionService = userSessionService;
+        this.masterSessionService = masterSessionService;
     }
 
     @Override
@@ -46,9 +49,33 @@ public class SessionAuthFilter extends OncePerRequestFilter {
             }
         }
 
-        if (sessionId != null && sessionService.getActiveSessions().containsKey(sessionId)) {
-            // Attach user info to request for controllers
-            request.setAttribute("userEmail", sessionService.getActiveSessions().get(sessionId));
+        if(path.startsWith("/user"))
+        {
+            handleUserFilter(sessionId, userSessionService, filterChain, request, response);
+        }else if(path.startsWith("/master"))
+        {
+            handleMasterFilter(sessionId, masterSessionService, filterChain, request, response);
+        }
+    }
+
+    private void handleUserFilter(String sessionId,
+                                  ISessionService userSessionService,
+                                  FilterChain filterChain,
+                                  HttpServletRequest request,
+                                  HttpServletResponse response) throws ServletException, IOException {
+        if (sessionId != null && userSessionService.getActiveSessions().containsKey(sessionId)) {
+            request.setAttribute("userEmail", userSessionService.getActiveSessions().get(sessionId));
+            filterChain.doFilter(request, response);
+        } else {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        }
+    }
+    private void handleMasterFilter(String sessionId,
+                                    ISessionService masterSessionService,
+                                    FilterChain filterChain,
+                                    HttpServletRequest request,
+                                    HttpServletResponse response) throws ServletException, IOException {
+        if (sessionId != null && masterSessionService.getActiveSessions().containsKey(sessionId)) {
             filterChain.doFilter(request, response);
         } else {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

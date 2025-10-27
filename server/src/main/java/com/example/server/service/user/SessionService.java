@@ -1,12 +1,15 @@
-package com.example.server.service;
+package com.example.server.service.user;
 
+import com.example.server.service.interfaces.ISessionService;
+import lombok.Getter;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Service
-public class SessionService {
+@Getter
+@Service("userSessionService")
+public class SessionService implements ISessionService {
     private final Map<String, String> activeSessions = new ConcurrentHashMap<>();
 
     public void addSession(String sessionId, String userMail) {
@@ -21,7 +24,4 @@ public class SessionService {
         return activeSessions.get(sessionId);
     }
 
-    public Map<String, String> getActiveSessions() {
-        return activeSessions;
-    }
 }

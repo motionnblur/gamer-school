@@ -5,9 +5,9 @@ import PersonIcon from "@mui/icons-material/Person";
 import TheatersIcon from "@mui/icons-material/Theaters";
 
 import React, { useState } from "react";
-import Videos from "./Videos";
-import Profile from "./Profile";
-import MainDashPage from "./MainDashPage";
+import Videos from "../Videos/Videos";
+import Profile from "../Profile/Profile";
+import MainDashPage from "../MainDashPage";
 
 export default function DashBoard() {
   const [disabledButton, setDisabledButton] = useState<Number>();

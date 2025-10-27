@@ -1,33 +1,32 @@
 package com.example.server.service.user;
 
-import com.example.server.dto.user.UserLoginDto;
+import com.example.server.dto.user.LoginDto;
 import com.example.server.entity.UserEntity;
 import com.example.server.repository.UserEntityRepository;
 import com.example.server.service.EncryptService;
-import com.example.server.service.SessionService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
 
-@Service
-public class UserLoginService {
+@Service("userLoginService")
+public class LoginService  {
     private final UserEntityRepository userEntityRepository;
     private final EncryptService encryptService;
     private final SessionService sessionService;
 
-    public UserLoginService(UserEntityRepository userEntityRepository,
-                            EncryptService encryptService,
-                            SessionService sessionService) {
+    public LoginService(UserEntityRepository userEntityRepository,
+                        EncryptService encryptService,
+                        SessionService sessionService) {
         this.userEntityRepository = userEntityRepository;
         this.encryptService = encryptService;
         this.sessionService = sessionService;
     }
 
-    public void signUp(UserLoginDto userLoginDto) {
-        String userMail = userLoginDto.getUserMail();
-        String userPassword = userLoginDto.getUserPassword();
+    public void signUp(LoginDto loginDto) {
+        String userMail = loginDto.getUserMail();
+        String userPassword = loginDto.getUserPassword();
 
         if(userEntityRepository.findByUserMail(userMail) != null)
             throw new IllegalArgumentException("That mail is already in use");
@@ -38,9 +37,9 @@ public class UserLoginService {
 
         userEntityRepository.save(entity);
     }
-    public void login(HttpServletResponse response, UserLoginDto userLoginDto) {
-        String userMail = userLoginDto.getUserMail();
-        String userPassword = userLoginDto.getUserPassword();
+    public void login(HttpServletResponse response, LoginDto loginDto) {
+        String userMail = loginDto.getUserMail();
+        String userPassword = loginDto.getUserPassword();
 
         UserEntity entity = userEntityRepository.findByUserMail(userMail);
 

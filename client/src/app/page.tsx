@@ -16,7 +16,7 @@ import {
   getUserName,
 } from "@/domains/user/shared/services/authService";
 import Path from "@/domains/user/pages/Path/components/Path";
-import DashBoard from "@/domains/master/pages/DashBoard";
+import DashBoard from "@/domains/master/pages/Dashboard/DashBoard";
 
 export default function Home() {
   const isLoggedIn = useAtomValue(isLoggedInAtom);

@@ -20,6 +20,7 @@ services:
       - SPRING_DATASOURCE_PASSWORD=${SPRING_DATASOURCE_PASSWORD}
     volumes:
       - ./server:/App
+      - ./server/uploads:/App/uploads
   postgres:
     image: postgres:17
     restart: always
