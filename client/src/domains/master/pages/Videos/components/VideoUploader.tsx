@@ -14,10 +14,13 @@ interface VideoUploadProps {
   onUpload?: (file: File) => void;
 }
 
+const CHUNK_SIZE = 5 * 1024 * 1024; // 5 MB per chunk
+
 const VideoUploader: React.FC<VideoUploadProps> = ({ onUpload }) => {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoURL, setVideoURL] = useState<string>("");
   const [uploading, setUploading] = useState<boolean>(false);
+  const [progress, setProgress] = useState<number>(0);
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -32,28 +35,41 @@ const VideoUploader: React.FC<VideoUploadProps> = ({ onUpload }) => {
   const handleUpload = async () => {
     if (!videoFile) return;
     setUploading(true);
+    setProgress(0);
+
+    const totalChunks = Math.ceil(videoFile.size / CHUNK_SIZE);
+    const fileId = `${videoFile.name}-${Date.now()}`; // unique identifier
 
     try {
-      const formData = new FormData();
-      formData.append("file", videoFile);
+      for (let i = 0; i < totalChunks; i++) {
+        const start = i * CHUNK_SIZE;
+        const end = Math.min(start + CHUNK_SIZE, videoFile.size);
+        const chunk = videoFile.slice(start, end);
 
-      // Change this URL to match your backend endpoint
-      const response = await fetch(
-        "http://localhost:8080/master/videos/upload",
-        {
-          method: "POST",
-          body: formData,
+        const formData = new FormData();
+        formData.append("file", chunk);
+        formData.append("fileId", fileId);
+        formData.append("chunkNumber", String(i));
+        formData.append("totalChunks", String(totalChunks));
+
+        const response = await fetch(
+          "http://localhost:8080/master/upload-chunk",
+          {
+            method: "POST",
+            body: formData,
+            credentials: "include",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`Chunk ${i} upload failed`);
         }
-      );
 
-      if (!response.ok) {
-        throw new Error("Upload failed");
+        setProgress(Math.round(((i + 1) / totalChunks) * 100));
       }
 
-      const result = await response.json();
-      console.log("Server response:", result);
-
       alert("Video uploaded successfully!");
+      onUpload?.(videoFile);
     } catch (error) {
       console.error(error);
       alert("Failed to upload video");
@@ -65,6 +81,7 @@ const VideoUploader: React.FC<VideoUploadProps> = ({ onUpload }) => {
   const reset = () => {
     setVideoFile(null);
     setVideoURL("");
+    setProgress(0);
   };
 
   return (
@@ -111,18 +128,17 @@ const VideoUploader: React.FC<VideoUploadProps> = ({ onUpload }) => {
               component="video"
               controls
               src={videoURL}
-              sx={{
-                borderRadius: 2,
-                mb: 2,
-                maxHeight: 300,
-              }}
+              sx={{ borderRadius: 2, mb: 2, maxHeight: 300 }}
             />
             <Typography variant="body2" sx={{ mb: 2 }}>
               {videoFile?.name}
             </Typography>
 
             {uploading ? (
-              <LinearProgress />
+              <Box>
+                <LinearProgress variant="determinate" value={progress} />
+                <Typography sx={{ mt: 1 }}>{progress}%</Typography>
+              </Box>
             ) : (
               <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
                 <Button
