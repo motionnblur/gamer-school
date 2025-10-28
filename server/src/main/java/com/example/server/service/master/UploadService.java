@@ -12,22 +12,22 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.time.LocalDateTime;
 
 @Service("masterUploadService")
 public class UploadService {
-    private final FileService fileService;
-    private final SessionService masterSessionService;
+    private final ChunkStorageService chunkStorageService;
     private final MasterEntityRepository masterEntityRepository;
     private final UploadEntityRepository uploadEntityRepository;
 
     public UploadService(FileService fileService,
                          SessionService masterSessionService,
                          MasterEntityRepository masterEntityRepository,
-                         UploadEntityRepository uploadEntityRepository) {
-        this.fileService = fileService;
-        this.masterSessionService = masterSessionService;
+                         UploadEntityRepository uploadEntityRepository,
+                         ChunkStorageService chunkStorageService) {
         this.masterEntityRepository = masterEntityRepository;
         this.uploadEntityRepository = uploadEntityRepository;
+        this.chunkStorageService = chunkStorageService;
     }
     public void mergeChunksAfterUpload(String fileId,
                                        File tempDir,
@@ -49,38 +49,25 @@ public class UploadService {
                              String fileId,
                              int chunkNumber,
                              int totalChunks) throws IOException {
-        String uploadRoot = System.getProperty("user.dir") + "/uploads/tmp/" + fileId;
-        File tempDir = new File(uploadRoot);
-        if (!tempDir.exists() && !tempDir.mkdirs()) {
-            throw new IOException("Failed to create upload directory: " + tempDir.getAbsolutePath());
+        chunkStorageService.saveChunk(fileId, chunkNumber, chunk);
+        if (!chunkStorageService.isUploadComplete(fileId, totalChunks)) {
+            return;
         }
 
-        File chunkFile = new File(tempDir, "chunk-" + chunkNumber);
-        chunk.transferTo(chunkFile);
+        File finalFile = chunkStorageService.combineChunks(fileId, totalChunks);
 
-        if (tempDir.listFiles().length == totalChunks) {
-            File finalFile = new File("uploads/" + fileId + ".mp4");
-            try (FileOutputStream fos = new FileOutputStream(finalFile)) {
-                for (int i = 0; i < totalChunks; i++) {
-                    File c = new File(tempDir, "chunk-" + i);
-                    Files.copy(c.toPath(), fos);
-                    c.delete();
-                }
-            }
-            tempDir.delete();
-
-            MasterEntity masterEntity = masterEntityRepository.findByMasterId(masterId);
-            if(masterEntity == null)
-                throw new IllegalArgumentException("Master not found");
-
-            UploadEntity uploadEntity = new UploadEntity();
-            uploadEntity.setTitle(fileId);
-            uploadEntity.setDescription(fileId);
-            uploadEntity.setFilePath("uploads/" + fileId + ".mp4");
-            uploadEntity.setUploadDate(java.time.LocalDateTime.now());
-            uploadEntity.setMaster(masterEntity);
-
-            uploadEntityRepository.save(uploadEntity);
+        MasterEntity masterEntity = masterEntityRepository.findByMasterId(masterId);
+        if (masterEntity == null) {
+            throw new IllegalArgumentException("Master not found");
         }
+
+        UploadEntity uploadEntity = new UploadEntity();
+        uploadEntity.setTitle(fileId);
+        uploadEntity.setDescription(fileId);
+        uploadEntity.setFilePath(finalFile.getPath());
+        uploadEntity.setUploadDate(LocalDateTime.now());
+        uploadEntity.setMaster(masterEntity);
+
+        uploadEntityRepository.save(uploadEntity);
     }
 }
