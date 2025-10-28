@@ -4,7 +4,6 @@ import com.example.server.entity.MasterEntity;
 import com.example.server.entity.UploadEntity;
 import com.example.server.repository.MasterEntityRepository;
 import com.example.server.repository.UploadEntityRepository;
-import com.example.server.service.FileService;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,16 +19,19 @@ public class UploadService {
     private final MasterEntityRepository masterEntityRepository;
     private final UploadEntityRepository uploadEntityRepository;
     private final FileService fileService;
+    private final VideoService videoService;
 
     public UploadService(FileService fileService,
                          SessionService masterSessionService,
                          MasterEntityRepository masterEntityRepository,
                          UploadEntityRepository uploadEntityRepository,
-                         ChunkStorageService chunkStorageService) {
+                         ChunkStorageService chunkStorageService,
+                         VideoService videoService) {
         this.masterEntityRepository = masterEntityRepository;
         this.uploadEntityRepository = uploadEntityRepository;
         this.chunkStorageService = chunkStorageService;
         this.fileService = fileService;
+        this.videoService = videoService;
     }
     public void mergeChunksAfterUpload(String fileId,
                                        File tempDir,
@@ -57,17 +59,20 @@ public class UploadService {
         }
 
         File finalFile = chunkStorageService.combineChunks(fileId, totalChunks);
+        int videoDuration = (int)videoService.getVideoDurationSeconds(finalFile.getPath());
+        long fileSize = fileService.getFileSizeInMegabytes(finalFile);
 
         MasterEntity masterEntity = masterEntityRepository.findByMasterId(masterId);
         if (masterEntity == null) {
             throw new IllegalArgumentException("Master not found");
         }
-
+        
         UploadEntity uploadEntity = new UploadEntity();
         uploadEntity.setTitle(fileId);
         uploadEntity.setDescription(fileId);
         uploadEntity.setFilePath(finalFile.getPath());
-        uploadEntity.setFileSize(fileService.getFileSizeInMegabytes(finalFile));
+        uploadEntity.setFileSize(fileSize);
+        uploadEntity.setDurationSeconds(videoDuration);
         uploadEntity.setUploadDate(LocalDateTime.now());
         uploadEntity.setMaster(masterEntity);
 
