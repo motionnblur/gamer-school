@@ -16,4 +16,10 @@ public class FileService {
     public File createChunkFile(File tempDir, int chunkNumber) {
         return new File(tempDir, "chunk-" + chunkNumber);
     }
+    public long getFileSizeInMegabytes(File file) {
+        long sizeInBytes = file.length();
+        final double MB = 1024.0 * 1024.0;
+
+        return (long) (sizeInBytes / MB);
+    }
 }

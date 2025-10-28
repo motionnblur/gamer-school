@@ -19,6 +19,7 @@ public class UploadService {
     private final ChunkStorageService chunkStorageService;
     private final MasterEntityRepository masterEntityRepository;
     private final UploadEntityRepository uploadEntityRepository;
+    private final FileService fileService;
 
     public UploadService(FileService fileService,
                          SessionService masterSessionService,
@@ -28,6 +29,7 @@ public class UploadService {
         this.masterEntityRepository = masterEntityRepository;
         this.uploadEntityRepository = uploadEntityRepository;
         this.chunkStorageService = chunkStorageService;
+        this.fileService = fileService;
     }
     public void mergeChunksAfterUpload(String fileId,
                                        File tempDir,
@@ -65,6 +67,7 @@ public class UploadService {
         uploadEntity.setTitle(fileId);
         uploadEntity.setDescription(fileId);
         uploadEntity.setFilePath(finalFile.getPath());
+        uploadEntity.setFileSize(fileService.getFileSizeInMegabytes(finalFile));
         uploadEntity.setUploadDate(LocalDateTime.now());
         uploadEntity.setMaster(masterEntity);
 
