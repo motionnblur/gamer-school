@@ -14,6 +14,7 @@ import lombok.ToString;
 @Table(name = "upload_entity")
 public class UploadEntity {
     @Id
+    @Column(name = "upload_entity_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -43,7 +44,7 @@ public class UploadEntity {
 
     // Many Uploads → One Master
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "master_id", referencedColumnName = "master_id", nullable = false)
+    @JoinColumn(name = "master_entity_id", referencedColumnName = "master_entity_id", nullable = false)
     @ToString.Exclude
     private MasterEntity master;
 }

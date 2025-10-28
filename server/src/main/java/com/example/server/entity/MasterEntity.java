@@ -16,6 +16,7 @@ import java.util.List;
 public class MasterEntity {
 
     @Id
+    @Column(name = "master_entity_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -28,7 +29,7 @@ public class MasterEntity {
     @Column(name = "master_mail", unique = true, nullable = false)
     private String masterMail;
 
-    // One Master → Many Uploads
-    @OneToMany(mappedBy = "master", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "master_entity_id", referencedColumnName = "master_entity_id")
     private List<UploadEntity> uploads;
 }
