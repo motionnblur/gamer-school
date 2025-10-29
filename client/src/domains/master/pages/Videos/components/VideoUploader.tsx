@@ -148,6 +148,7 @@ const VideoUploader: React.FC<VideoUploadProps> = ({ onUpload }) => {
         boxShadow: 2,
         maxWidth: 600,
         margin: "auto",
+        overflow: "auto",
       }}
     >
       <CardContent>
