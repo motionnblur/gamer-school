@@ -11,10 +11,17 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Service("masterUploadService")
 public class UploadService {
+    private final Map<String, Long> pendingVideoId = new ConcurrentHashMap<>();
+
     private final ChunkStorageService chunkStorageService;
     private final MasterEntityRepository masterEntityRepository;
     private final UploadEntityRepository uploadEntityRepository;
@@ -76,6 +83,32 @@ public class UploadService {
         uploadEntity.setUploadDate(LocalDateTime.now());
         uploadEntity.setMaster(masterEntity);
 
-        uploadEntityRepository.save(uploadEntity);
+        UploadEntity ue = uploadEntityRepository.save(uploadEntity);
+
+        pendingVideoId.put(fileId, ue.getId());
+    }
+
+    public void handleUploadMetadata(String fileId,
+                                     String title,
+                                     String description,
+                                     MultipartFile thumbnail) throws IOException {
+        Optional<UploadEntity> uploadEntity = uploadEntityRepository.findById(pendingVideoId.get(fileId));
+
+        uploadEntity.get().setTitle(title);
+        uploadEntity.get().setDescription(description);
+
+        if (thumbnail != null && !thumbnail.isEmpty()) {
+            String thumbnailFileName = fileId + "_thumbnail.jpg";
+            Path thumbnailPath = Paths.get("uploads/thumbnails", thumbnailFileName);
+
+            Files.createDirectories(thumbnailPath.getParent());
+            Files.copy(thumbnail.getInputStream(), thumbnailPath);
+
+            uploadEntity.get().setThumbnailPath(thumbnailPath.toString());
+        } else {
+            uploadEntity.get().setThumbnailPath(null);
+        }
+
+        uploadEntityRepository.save(uploadEntity.get());
     }
 }

@@ -35,4 +35,21 @@ public class UploadController {
             return HttpStatus.BAD_REQUEST;
         }
     }
+
+    @PostMapping("upload-metadata")
+    public HttpStatus uploadMetadata(
+            @RequestParam("fileId") String fileId,
+            @RequestParam("title") String title,
+            @RequestParam("description") String description,
+            @RequestParam(value = "thumbnail", required = false) MultipartFile thumbnail
+    )
+    {
+        try{
+            uploadService.handleUploadMetadata(fileId, title, description, thumbnail);
+            return HttpStatus.OK;
+        } catch(IOException e) {
+            e.printStackTrace();
+            return HttpStatus.BAD_REQUEST;
+        }
+    }
 }
