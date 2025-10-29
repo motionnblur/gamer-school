@@ -110,5 +110,6 @@ public class UploadService {
         }
 
         uploadEntityRepository.save(uploadEntity.get());
+        pendingVideoId.remove(fileId);
     }
 }
