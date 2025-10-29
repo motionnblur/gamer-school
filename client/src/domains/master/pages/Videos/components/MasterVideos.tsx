@@ -1,7 +1,15 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import React from "react";
 
-export default function MasterVideos() {
+export default function MasterVideos({
+  setShowVideoUploader,
+}: {
+  setShowVideoUploader: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const openVideoUploader = () => {
+    setShowVideoUploader(true);
+  };
+
   return (
     <Box
       sx={{
@@ -23,10 +31,12 @@ export default function MasterVideos() {
         }}
         spacing={4}
       >
-        <Typography variant="subtitle2" gutterBottom color="gray">
+        <Typography variant="h6" gutterBottom color="gray">
           No videos available
         </Typography>
-        <Button variant="contained">Upload video</Button>
+        <Button variant="contained" onClick={openVideoUploader}>
+          Upload video
+        </Button>
       </Stack>
     </Box>
   );

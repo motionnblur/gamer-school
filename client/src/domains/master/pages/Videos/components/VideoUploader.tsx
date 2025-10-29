@@ -8,6 +8,8 @@ import {
   CardMedia,
   LinearProgress,
   TextField,
+  Backdrop,
+  CircularProgress,
 } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import ImageIcon from "@mui/icons-material/Image";
@@ -21,7 +23,16 @@ interface VideoUploadProps {
 
 const CHUNK_SIZE = 5 * 1024 * 1024; // 5 MB
 
-const VideoUploader: React.FC<VideoUploadProps> = ({ onUpload }) => {
+const VideoUploader = ({
+  onUpload,
+  setShowVideoUploader,
+}: {
+  onUpload?: (
+    file: File,
+    metadata: { title: string; description: string; thumbnail?: File }
+  ) => void;
+  setShowVideoUploader: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoURL, setVideoURL] = useState<string>("");
   const [uploading, setUploading] = useState<boolean>(false);
@@ -140,151 +151,172 @@ const VideoUploader: React.FC<VideoUploadProps> = ({ onUpload }) => {
   };
 
   return (
-    <Card
-      variant="outlined"
-      sx={{
-        p: 3,
-        borderRadius: 3,
-        boxShadow: 2,
-        maxWidth: 600,
-        margin: "auto",
-        overflow: "auto",
-      }}
-    >
-      <CardContent>
-        <Typography variant="h6" gutterBottom>
-          Upload a Video
-        </Typography>
+    <>
+      <div
+        style={{
+          position: "fixed",
+          top: 0,
+          left: 0,
+          width: "100vw",
+          height: "100vh",
+          backgroundColor: "rgba(0, 0, 0, 0.5)",
+          zIndex: 99,
+        }}
+        onClick={() => {
+          setShowVideoUploader(false);
+        }}
+      />
+      <Card
+        variant="outlined"
+        sx={{
+          p: 3,
+          borderRadius: 3,
+          boxShadow: 2,
+          maxWidth: 600,
+          margin: "auto",
+          overflow: "auto",
+          zIndex: 100,
+          position: "absolute",
+          top: "50%",
+          left: "50%",
+          transform: "translate(-50%, -50%)",
+        }}
+      >
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Upload a Video
+          </Typography>
 
-        {/* Video Upload Section */}
-        {!videoURL ? (
-          <Box
-            sx={{
-              border: "2px dashed #ccc",
-              borderRadius: 2,
-              p: 4,
-              textAlign: "center",
-              cursor: "pointer",
-              "&:hover": { borderColor: "primary.main" },
-            }}
-            onClick={() => document.getElementById("videoInput")?.click()}
-          >
-            <UploadFileIcon color="primary" sx={{ fontSize: 48 }} />
-            <Typography>Click or drag a video file here</Typography>
-            <input
-              id="videoInput"
-              type="file"
-              accept="video/*"
-              hidden
-              onChange={handleVideoChange}
-            />
-          </Box>
-        ) : (
-          <Box>
-            <CardMedia
-              component="video"
-              controls
-              src={videoURL}
-              sx={{ borderRadius: 2, mb: 2, maxHeight: 300 }}
-            />
-            <Typography variant="body2" sx={{ mb: 2 }}>
-              {videoFile?.name}
-            </Typography>
-
-            {/* Metadata Fields */}
-            <TextField
-              fullWidth
-              label="Video Title"
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-            <TextField
-              fullWidth
-              multiline
-              minRows={3}
-              label="Description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              sx={{ mb: 2 }}
-            />
-
-            {/* Thumbnail Upload */}
-            <Box sx={{ mb: 2 }}>
-              <Typography variant="subtitle2" sx={{ mb: 1 }}>
-                Thumbnail
+          {/* Video Upload Section */}
+          {!videoURL ? (
+            <Box
+              sx={{
+                border: "2px dashed #ccc",
+                borderRadius: 2,
+                p: 4,
+                textAlign: "center",
+                cursor: "pointer",
+                "&:hover": { borderColor: "primary.main" },
+              }}
+              onClick={() => document.getElementById("videoInput")?.click()}
+            >
+              <UploadFileIcon color="primary" sx={{ fontSize: 48 }} />
+              <Typography>Click or drag a video file here</Typography>
+              <input
+                id="videoInput"
+                type="file"
+                accept="video/*"
+                hidden
+                onChange={handleVideoChange}
+              />
+            </Box>
+          ) : (
+            <Box>
+              <CardMedia
+                component="video"
+                controls
+                src={videoURL}
+                sx={{ borderRadius: 2, mb: 2, maxHeight: 300 }}
+              />
+              <Typography variant="body2" sx={{ mb: 2 }}>
+                {videoFile?.name}
               </Typography>
-              {!thumbnailURL ? (
-                <Box
-                  sx={{
-                    border: "2px dashed #ccc",
-                    borderRadius: 2,
-                    p: 2,
-                    textAlign: "center",
-                    cursor: "pointer",
-                    "&:hover": { borderColor: "primary.main" },
-                  }}
-                  onClick={() =>
-                    document.getElementById("thumbnailInput")?.click()
-                  }
-                >
-                  <ImageIcon color="primary" sx={{ fontSize: 36 }} />
-                  <Typography>Click to upload a thumbnail</Typography>
-                  <input
-                    id="thumbnailInput"
-                    type="file"
-                    accept="image/*"
-                    hidden
-                    onChange={handleThumbnailChange}
-                  />
+
+              {/* Metadata Fields */}
+              <TextField
+                fullWidth
+                label="Video Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                sx={{ mb: 2 }}
+              />
+              <TextField
+                fullWidth
+                multiline
+                minRows={3}
+                label="Description"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                sx={{ mb: 2 }}
+              />
+
+              {/* Thumbnail Upload */}
+              <Box sx={{ mb: 2 }}>
+                <Typography variant="subtitle2" sx={{ mb: 1 }}>
+                  Thumbnail
+                </Typography>
+                {!thumbnailURL ? (
+                  <Box
+                    sx={{
+                      border: "2px dashed #ccc",
+                      borderRadius: 2,
+                      p: 2,
+                      textAlign: "center",
+                      cursor: "pointer",
+                      "&:hover": { borderColor: "primary.main" },
+                    }}
+                    onClick={() =>
+                      document.getElementById("thumbnailInput")?.click()
+                    }
+                  >
+                    <ImageIcon color="primary" sx={{ fontSize: 36 }} />
+                    <Typography>Click to upload a thumbnail</Typography>
+                    <input
+                      id="thumbnailInput"
+                      type="file"
+                      accept="image/*"
+                      hidden
+                      onChange={handleThumbnailChange}
+                    />
+                  </Box>
+                ) : (
+                  <Box sx={{ textAlign: "center" }}>
+                    <img
+                      src={thumbnailURL}
+                      alt="Thumbnail Preview"
+                      style={{
+                        width: "100%",
+                        maxHeight: 180,
+                        borderRadius: "8px",
+                        objectFit: "cover",
+                      }}
+                    />
+                    <Button
+                      color="error"
+                      onClick={() => setThumbnailURL("")}
+                      sx={{ mt: 1 }}
+                    >
+                      Remove Thumbnail
+                    </Button>
+                  </Box>
+                )}
+              </Box>
+
+              {/* Upload Progress or Buttons */}
+              {uploading ? (
+                <Box>
+                  <LinearProgress variant="determinate" value={progress} />
+                  <Typography sx={{ mt: 1 }}>{progress}%</Typography>
                 </Box>
               ) : (
-                <Box sx={{ textAlign: "center" }}>
-                  <img
-                    src={thumbnailURL}
-                    alt="Thumbnail Preview"
-                    style={{
-                      width: "100%",
-                      maxHeight: 180,
-                      borderRadius: "8px",
-                      objectFit: "cover",
-                    }}
-                  />
+                <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
                   <Button
-                    color="error"
-                    onClick={() => setThumbnailURL("")}
-                    sx={{ mt: 1 }}
+                    variant="contained"
+                    color="primary"
+                    onClick={handleUpload}
                   >
-                    Remove Thumbnail
+                    Upload
+                  </Button>
+                  <Button variant="outlined" color="error" onClick={reset}>
+                    Remove
                   </Button>
                 </Box>
               )}
             </Box>
-
-            {/* Upload Progress or Buttons */}
-            {uploading ? (
-              <Box>
-                <LinearProgress variant="determinate" value={progress} />
-                <Typography sx={{ mt: 1 }}>{progress}%</Typography>
-              </Box>
-            ) : (
-              <Box sx={{ display: "flex", justifyContent: "center", gap: 2 }}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  onClick={handleUpload}
-                >
-                  Upload
-                </Button>
-                <Button variant="outlined" color="error" onClick={reset}>
-                  Remove
-                </Button>
-              </Box>
-            )}
-          </Box>
-        )}
-      </CardContent>
-    </Card>
+          )}
+        </CardContent>
+      </Card>
+    </>
   );
 };
 
