@@ -173,6 +173,7 @@ const VideoUploader = ({
           borderRadius: 3,
           boxShadow: 2,
           maxWidth: 600,
+          maxHeight: "95%",
           margin: "auto",
           overflow: "auto",
           zIndex: 100,
