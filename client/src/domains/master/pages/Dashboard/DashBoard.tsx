@@ -10,12 +10,12 @@ import Profile from "../Profile/Profile";
 import MainDashPage from "../MainDashPage";
 
 export default function DashBoard() {
-  const [disabledButton, setDisabledButton] = useState<Number>();
+  const [selectedButton, setSelectedButton] = useState<Number>(0);
   const [currentSelectedPageIndex, setCurrentSelectedPageIndex] =
     useState<Number>(0);
   const handleClick = (buttonId: Number) => {
     setCurrentSelectedPageIndex(buttonId);
-    setDisabledButton(buttonId);
+    setSelectedButton(buttonId);
   };
 
   return (
@@ -38,8 +38,9 @@ export default function DashBoard() {
               color: "black",
               justifyContent: "flex-start",
               textAlign: "left",
-              pointerEvents: disabledButton === 0 ? "none" : "auto",
-              boxShadow: disabledButton === 0 ? 1 : 0,
+              pointerEvents: selectedButton === 0 ? "none" : "auto",
+              boxShadow: selectedButton === 0 ? 1 : 0,
+              backgroundColor: selectedButton === 0 ? "#ebf2f6" : "white",
             }}
           >
             Dashboard
@@ -51,8 +52,9 @@ export default function DashBoard() {
               color: "black",
               justifyContent: "flex-start",
               textAlign: "left",
-              pointerEvents: disabledButton === 1 ? "none" : "auto",
-              boxShadow: disabledButton === 1 ? 1 : 0,
+              pointerEvents: selectedButton === 1 ? "none" : "auto",
+              boxShadow: selectedButton === 1 ? 1 : 0,
+              backgroundColor: selectedButton === 1 ? "#ebf2f6" : "white",
             }}
           >
             Profile
@@ -65,8 +67,9 @@ export default function DashBoard() {
               color: "black",
               justifyContent: "flex-start",
               textAlign: "left",
-              pointerEvents: disabledButton === 2 ? "none" : "auto",
-              boxShadow: disabledButton === 2 ? 1 : 0,
+              pointerEvents: selectedButton === 2 ? "none" : "auto",
+              boxShadow: selectedButton === 2 ? 1 : 0,
+              backgroundColor: selectedButton === 2 ? "#ebf2f6" : "white",
             }}
           >
             Videos

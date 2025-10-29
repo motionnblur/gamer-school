@@ -288,7 +288,7 @@ const styles = {
     cursor: "pointer",
     transition: "background-color 0.2s ease",
   },
-  disabledButton: {
+  selectedButton: {
     backgroundColor: "#ccc",
     cursor: "not-allowed",
   },
