@@ -22,12 +22,13 @@ export default function DashBoard() {
     <Stack direction={"row"} width={"100%"} height={"100vh"}>
       <Box
         sx={{
-          width: "360px",
+          width: "300px",
           height: "100%",
           display: "flex",
           alignItems: "center",
           justifyContent: "center",
           backgroundColor: "white",
+          flexShrink: 0,
         }}
       >
         <Stack direction={"column"} width={"80%"} height={"86%"} spacing={2}>
@@ -78,6 +79,7 @@ export default function DashBoard() {
       </Box>
       <Box
         sx={{
+          minWidth: "800px",
           width: "100%",
           height: "100%",
           backgroundColor: "#ebf2f6",

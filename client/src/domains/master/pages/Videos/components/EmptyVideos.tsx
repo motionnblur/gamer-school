@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Typography } from "@mui/material";
 import React from "react";
 
-export default function MasterVideos({
+export default function EmptyVideos({
   setShowVideoUploader,
 }: {
   setShowVideoUploader: React.Dispatch<React.SetStateAction<boolean>>;

@@ -1,7 +1,9 @@
 import { Stack, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import VideoUploader from "./components/VideoUploader";
-import MasterVideos from "./components/MasterVideos";
+import MasterVideos from "./components/EmptyVideos";
+import EmptyVideos from "./components/EmptyVideos";
+import VideosPage from "./components/VideosPage";
 
 export default function Videos() {
   const [showEmptyPage, setShowEmptyPage] = useState(true);
@@ -23,9 +25,9 @@ export default function Videos() {
   return (
     <Stack direction={"column"} sx={{ width: "100%", height: "100%" }} gap={2}>
       {showEmptyPage && (
-        <MasterVideos setShowVideoUploader={openCloseVideoUploader} />
+        <EmptyVideos setShowVideoUploader={openCloseVideoUploader} />
       )}
-      {showVideoUploader && (
+      {showEmptyPage && showVideoUploader && (
         <VideoUploader
           onUpload={() => {
             setShowEmptyPage(true);
@@ -34,6 +36,7 @@ export default function Videos() {
           setShowVideoUploader={openCloseVideoUploader}
         />
       )}
+      {!showEmptyPage && <VideosPage />}
     </Stack>
   );
 }
