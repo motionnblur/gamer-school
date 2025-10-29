@@ -199,6 +199,29 @@ const VideoUploader = ({
                 "&:hover": { borderColor: "primary.main" },
               }}
               onClick={() => document.getElementById("videoInput")?.click()}
+              onDragOver={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.currentTarget.style.borderColor = "#1976d2"; // highlight border
+              }}
+              onDragLeave={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.currentTarget.style.borderColor = "#ccc";
+              }}
+              onDrop={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                e.currentTarget.style.borderColor = "#ccc";
+
+                const file = e.dataTransfer.files?.[0];
+                if (file && file.type.startsWith("video/")) {
+                  setVideoFile(file);
+                  setVideoURL(URL.createObjectURL(file));
+                } else {
+                  alert("Please drop a valid video file.");
+                }
+              }}
             >
               <UploadFileIcon color="primary" sx={{ fontSize: 48 }} />
               <Typography>Click or drag a video file here</Typography>
