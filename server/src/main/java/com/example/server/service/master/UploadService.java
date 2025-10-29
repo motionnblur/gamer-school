@@ -112,4 +112,13 @@ public class UploadService {
         uploadEntityRepository.save(uploadEntity.get());
         pendingVideoId.remove(fileId);
     }
+
+    public void handleGetUploadState(String masterId) throws IOException {
+        MasterEntity me = masterEntityRepository.findByMasterId(masterId);
+        if(me == null)
+            throw new IllegalArgumentException("Master entity not found");
+        if (me.getUploads().isEmpty()) {
+            throw new IllegalArgumentException("Upload entity not found");
+        }
+    }
 }

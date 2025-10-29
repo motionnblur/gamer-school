@@ -8,6 +8,6 @@ import java.util.Optional;
 
 @Repository
 public interface MasterEntityRepository extends JpaRepository<MasterEntity, Long> {
-    MasterEntity findByMasterId(String userMail);
+    MasterEntity findByMasterId(String masterId);
     Optional<MasterEntity> findByMasterMail(String userMail);
 }

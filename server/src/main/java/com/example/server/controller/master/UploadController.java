@@ -2,10 +2,7 @@ package com.example.server.controller.master;
 
 import com.example.server.service.master.UploadService;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -17,6 +14,17 @@ public class UploadController {
 
     public UploadController(UploadService uploadService) {
         this.uploadService = uploadService;
+    }
+
+    @GetMapping("/get-upload-state")
+    public HttpStatus getUploadState(@RequestParam("userId") String userId) {
+        try {
+            uploadService.handleGetUploadState(userId);
+            return HttpStatus.OK;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return HttpStatus.BAD_REQUEST;
+        }
     }
 
     @PostMapping("/upload-chunk")
