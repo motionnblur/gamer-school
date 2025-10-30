@@ -10,15 +10,21 @@ import org.springframework.stereotype.Service;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class VideoService {
     private final MasterEntityRepository masterEntityRepository;
+    private final UploadEntityRepository uploadEntityRepository;
 
-    public VideoService(MasterEntityRepository masterEntityRepository) {
+    public VideoService(MasterEntityRepository masterEntityRepository,
+                        UploadEntityRepository uploadEntityRepository) {
         this.masterEntityRepository = masterEntityRepository;
+        this.uploadEntityRepository = uploadEntityRepository;
     }
 
     public double getVideoDurationSeconds(String filePath) {
@@ -55,6 +61,7 @@ public class VideoService {
         if(!dtos.isEmpty()) {
             for(UploadEntity e : dtos) {
                 VideoMetadataDto dto = new VideoMetadataDto();
+                dto.setId(e.getId());
                 dto.setTitle(e.getTitle());
                 dto.setDescription(e.getDescription());
                 dto.setDuration(e.getDurationSeconds());
@@ -67,5 +74,13 @@ public class VideoService {
         }
 
         return metadataDtos;
+    }
+
+    public byte[] getVideoThumbnail(long videoId) throws IOException {
+        Optional<UploadEntity> uploadEntity = uploadEntityRepository.findById(videoId);
+        if(uploadEntity.isEmpty()) {
+            throw new RuntimeException("Upload entity not found");
+        }
+        return Files.readAllBytes(Paths.get(uploadEntity.get().getThumbnailPath()));
     }
 }

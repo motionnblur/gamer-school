@@ -14,6 +14,23 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import React, { useEffect, useState } from "react";
 
+interface IVideoMetadataDto {
+  id: string;
+  title: string;
+  description: string;
+  duration: number;
+  uploadDate: string;
+}
+
+interface IVideoRow {
+  videoId: string;
+  videoTitle: string;
+  videoDescription: string;
+  videoDuration: number;
+  videoDate: string;
+  thumbnailUrl: string | null;
+}
+
 export default function VideosPage() {
   function createData(
     videoTitle: string,
@@ -23,12 +40,7 @@ export default function VideosPage() {
   ) {
     return { videoTitle, videoDescription, videoDuration, videoDate };
   }
-  const [rows, setRows] = useState([
-    createData("Video 1", "Video description", 10, new Date().toISOString()),
-    createData("Video 2", "Video description", 20, new Date().toISOString()),
-    createData("Video 3", "Video description", 30, new Date().toISOString()),
-  ]);
-
+  const [rows, setRows] = useState<IVideoRow[]>([]);
   const videoMenuRef = React.useRef<HTMLDivElement>(null);
 
   function handleMenuItemClick() {
@@ -37,41 +49,69 @@ export default function VideosPage() {
 
   useEffect(() => {
     const userId: string | null = localStorage.getItem("user_id");
+    if (!userId) return;
+
+    // 1️⃣ Fetch video metadata
     fetch(
       `http://localhost:8080/master/get-all-video-metadata?userId=${userId}`,
       {
         method: "GET",
         credentials: "include",
       }
-    ).then((res: Response) => {
-      if (res.ok) {
-        res.json().then((data: IVideoMetadataDto[]) => {
-          const newRows = data.map((video) => {
-            const date = new Date(video.uploadDate);
-            const formattedDate = new Date(video.uploadDate).toLocaleString(
-              "tr-TR",
-              {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-                second: "2-digit",
-                hour12: false,
-              }
-            );
+    )
+      .then(async (res) => {
+        if (!res.ok) throw new Error("Failed to fetch video metadata");
+        const data: IVideoMetadataDto[] = await res.json();
 
-            return createData(
-              video.title,
-              video.description,
-              video.duration,
-              formattedDate
-            );
-          });
-          setRows(newRows);
+        // 2️⃣ Build row structure (initially without thumbnails)
+        const newRows: IVideoRow[] = data.map((video) => {
+          const formattedDate = new Date(video.uploadDate).toLocaleString(
+            "tr-TR",
+            {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+              second: "2-digit",
+              hour12: false,
+            }
+          );
+          return {
+            videoId: video.id,
+            videoTitle: video.title,
+            videoDescription: video.description,
+            videoDuration: video.duration,
+            videoDate: formattedDate,
+            thumbnailUrl: null, // placeholder until loaded
+          };
         });
-      }
-    });
+
+        setRows(newRows);
+
+        // 3️⃣ Fetch thumbnails for each video
+        data.forEach(async (video, index) => {
+          try {
+            const thumbResponse = await fetch(
+              `http://localhost:8080/master/get-video-thumbnail?videoId=${video.id}`,
+              { method: "GET", credentials: "include" }
+            );
+            if (!thumbResponse.ok) throw new Error("Failed to fetch thumbnail");
+            const blob = await thumbResponse.blob();
+            const url = URL.createObjectURL(blob);
+
+            // Update that specific video’s thumbnail
+            setRows((prev) =>
+              prev.map((row) =>
+                row.videoId === video.id ? { ...row, thumbnailUrl: url } : row
+              )
+            );
+          } catch (err) {
+            console.error("Thumbnail load failed for video:", video.id, err);
+          }
+        });
+      })
+      .catch((err) => console.error(err));
   }, []);
 
   return (
@@ -122,7 +162,12 @@ export default function VideosPage() {
                       borderRadius: "8px",
                       border: "1px solid black",
                     }}
-                    src="https://images.pexels.com/photos/1037992/pexels-photo-1037992.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
+                    src={
+                      row.thumbnailUrl // ✅ dynamically from backend
+                        ? row.thumbnailUrl
+                        : "https://via.placeholder.com/100x68?text=Loading..."
+                    }
+                    alt={row.videoTitle}
                   />
                   <Stack
                     direction={"column"}
