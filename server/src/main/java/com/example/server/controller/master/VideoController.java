@@ -21,9 +21,14 @@ public class VideoController {
     }
 
     @GetMapping("/get-all-video-metadata")
-    public List<VideoMetadataDto> getVideoMetadata(@RequestParam("userId") String userId) {
+    public ResponseEntity<List<VideoMetadataDto>> getVideoMetadata(@RequestParam("userId") String userId) {
         try{
-            return videoService.getAllVideoMetadata(userId);
+            List<VideoMetadataDto> dtos = videoService.getAllVideoMetadata(userId);
+            if(dtos.isEmpty()){
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }else{
+                return new ResponseEntity<>(dtos, HttpStatus.OK);
+            }
         } catch (Exception e) {
             throw new RuntimeException(e);
         }

@@ -31,7 +31,11 @@ interface IVideoRow {
   thumbnailUrl: string | null;
 }
 
-export default function VideosPage() {
+export default function VideosPage({
+  setShowEmptyPage,
+}: {
+  setShowEmptyPage: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const [rows, setRows] = useState<IVideoRow[]>([]);
   const videoMenuRef = React.useRef<HTMLDivElement>(null);
 
@@ -48,7 +52,15 @@ export default function VideosPage() {
         return res.json();
       })
       .then((data) => {
-        console.log(data);
+        rows.splice(
+          rows.findIndex((row) => row.videoId === videoId),
+          1
+        );
+        if (rows.length === 0) {
+          setShowEmptyPage(true);
+        } else {
+          setRows([...rows]);
+        }
       })
       .catch((err) => {
         console.error(err);
@@ -68,7 +80,11 @@ export default function VideosPage() {
       }
     )
       .then(async (res) => {
-        if (!res.ok) throw new Error("Failed to fetch video metadata");
+        //if (!res.ok) throw new Error("Failed to fetch video metadata");
+        if (res.status === 204) {
+          setShowEmptyPage(true);
+          return;
+        }
         const data: IVideoMetadataDto[] = await res.json();
 
         // 2️⃣ Build row structure (initially without thumbnails)

@@ -73,7 +73,7 @@ export default function Videos() {
         </>
       )}
 
-      {!showEmptyPage && <VideosPage />}
+      {!showEmptyPage && <VideosPage setShowEmptyPage={setShowEmptyPage} />}
     </Stack>
   );
 }

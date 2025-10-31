@@ -69,8 +69,6 @@ public class VideoService {
 
                 metadataDtos.add(dto);
             }
-        }else {
-            throw new Exception("Metadata error");
         }
 
         return metadataDtos;
