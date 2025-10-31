@@ -26,12 +26,14 @@ const CHUNK_SIZE = 5 * 1024 * 1024; // 5 MB
 const VideoUploader = ({
   onUpload,
   setShowVideoUploader,
+  setShowEmptyPage,
 }: {
   onUpload?: (
     file: File,
     metadata: { title: string; description: string; thumbnail?: File }
   ) => void;
   setShowVideoUploader: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowEmptyPage: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const [videoFile, setVideoFile] = useState<File | null>(null);
   const [videoURL, setVideoURL] = useState<string>("");
@@ -137,6 +139,7 @@ const VideoUploader = ({
       alert("Failed to upload video");
     } finally {
       setUploading(false);
+      setShowEmptyPage(false);
     }
   };
 

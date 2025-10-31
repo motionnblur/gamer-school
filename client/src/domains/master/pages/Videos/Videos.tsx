@@ -68,6 +68,7 @@ export default function Videos() {
                 setShowVideoUploader(false);
               }}
               setShowVideoUploader={openCloseVideoUploader}
+              setShowEmptyPage={setShowEmptyPage}
             />
           )}
         </>
