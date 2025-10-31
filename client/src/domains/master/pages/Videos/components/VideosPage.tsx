@@ -35,8 +35,24 @@ export default function VideosPage() {
   const [rows, setRows] = useState<IVideoRow[]>([]);
   const videoMenuRef = React.useRef<HTMLDivElement>(null);
 
-  function handleMenuItemClick() {
-    alert("Item clicked");
+  function handleEditButton() {
+    alert("Edit");
+  }
+  function handleDeleteButton(videoId: string) {
+    fetch(`http://localhost:8080/master/delete-video?videoId=${videoId}`, {
+      method: "DELETE",
+      credentials: "include",
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to delete video");
+        return res.json();
+      })
+      .then((data) => {
+        console.log(data);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
   }
 
   useEffect(() => {
@@ -188,16 +204,18 @@ export default function VideosPage() {
                         ref={videoMenuRef}
                       >
                         <IconButton
-                          aria-label="delete"
+                          aria-label="edit"
                           size="small"
-                          onClick={handleMenuItemClick}
+                          onClick={handleEditButton}
                         >
                           <EditIcon fontSize="inherit" />
                         </IconButton>
                         <IconButton
                           aria-label="delete"
                           size="small"
-                          onClick={handleMenuItemClick}
+                          onClick={() => {
+                            handleDeleteButton(row.videoId);
+                          }}
                         >
                           <DeleteIcon fontSize="inherit" />
                         </IconButton>

@@ -83,4 +83,14 @@ public class VideoService {
         }
         return Files.readAllBytes(Paths.get(uploadEntity.get().getThumbnailPath()));
     }
+
+    public void deleteVideo(long videoId) throws IOException {
+        Optional<UploadEntity> uploadEntity = uploadEntityRepository.findById(videoId);
+        if(uploadEntity.isEmpty()) {
+            throw new RuntimeException("Upload entity not found");
+        }
+        uploadEntityRepository.delete(uploadEntity.get());
+        Files.deleteIfExists(Paths.get(uploadEntity.get().getFilePath()));
+        Files.deleteIfExists(Paths.get(uploadEntity.get().getThumbnailPath()));
+    }
 }

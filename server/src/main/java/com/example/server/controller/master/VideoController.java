@@ -6,10 +6,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -40,6 +37,15 @@ public class VideoController {
             headers.setContentType(MediaType.IMAGE_JPEG); // or IMAGE_PNG, etc.
 
             return new ResponseEntity<>(thumbBytes, headers, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+    @DeleteMapping("/delete-video")
+    public HttpStatus deleteVideo(@RequestParam("videoId") long videoId) {
+        try {
+            videoService.deleteVideo(videoId);
+            return HttpStatus.OK;
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
