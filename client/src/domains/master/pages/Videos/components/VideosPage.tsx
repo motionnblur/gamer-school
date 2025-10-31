@@ -32,14 +32,6 @@ interface IVideoRow {
 }
 
 export default function VideosPage() {
-  function createData(
-    videoTitle: string,
-    videoDescription: string,
-    videoDuration: number,
-    videoDate: string
-  ) {
-    return { videoTitle, videoDescription, videoDuration, videoDate };
-  }
   const [rows, setRows] = useState<IVideoRow[]>([]);
   const videoMenuRef = React.useRef<HTMLDivElement>(null);
 
