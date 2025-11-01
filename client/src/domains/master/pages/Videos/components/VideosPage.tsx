@@ -13,6 +13,7 @@ import {
 } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import React, { useEffect, useState } from "react";
 import { useAtom } from "jotai";
 import { videoRowAtom } from "../atoms/videoPageAtoms";
@@ -137,11 +138,15 @@ export default function VideosPage({
         }}
       >
         <Button
+          component="label"
+          role={undefined}
           variant="contained"
+          tabIndex={-1}
+          startIcon={<CloudUploadIcon />}
+          sx={{ margin: "10px" }}
           onClick={() => {
             setShowVideoUploader(true);
           }}
-          sx={{ margin: "10px" }}
         >
           Upload
         </Button>
