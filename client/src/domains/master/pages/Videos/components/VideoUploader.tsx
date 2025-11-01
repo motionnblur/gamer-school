@@ -8,8 +8,6 @@ import {
   CardMedia,
   LinearProgress,
   TextField,
-  Backdrop,
-  CircularProgress,
 } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import ImageIcon from "@mui/icons-material/Image";
@@ -86,7 +84,6 @@ const VideoUploader = ({
     const fileId = `${videoFile.name}-${Date.now()}`;
 
     try {
-      // Upload video chunks
       for (let i = 0; i < totalChunks; i++) {
         const start = i * CHUNK_SIZE;
         const end = Math.min(start + CHUNK_SIZE, videoFile.size);
@@ -113,7 +110,6 @@ const VideoUploader = ({
         setProgress(Math.round(((i + 1) / totalChunks) * 100));
       }
 
-      // Upload metadata (title, description, thumbnail)
       const metadataForm = new FormData();
       metadataForm.append("fileId", fileId);
       metadataForm.append("title", title);
@@ -183,17 +179,6 @@ const VideoUploader = ({
     } finally {
       setUploading(false);
       setShowEmptyPage(false);
-
-      /* const videoRow: IVideoRow = {
-        videoId: fileId,
-        videoTitle: title,
-        videoDescription: description,
-        videoDuration: 0,
-        videoDate: new Date().toISOString(),
-        thumbnailUrl: thumbnailURL,
-      };
-
-      store.set(videoRowAtom, [...store.get(videoRowAtom), videoRow]); */
     }
   };
 
@@ -373,7 +358,6 @@ const VideoUploader = ({
                 )}
               </Box>
 
-              {/* Upload Progress or Buttons */}
               {uploading ? (
                 <Box>
                   <LinearProgress variant="determinate" value={progress} />

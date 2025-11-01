@@ -60,7 +60,6 @@ export default function VideosPage({
     const userId: string | null = localStorage.getItem("user_id");
     if (!userId) return;
 
-    // 1️⃣ Fetch video metadata
     fetch(
       `http://localhost:8080/master/get-all-video-metadata?userId=${userId}`,
       {
@@ -69,14 +68,12 @@ export default function VideosPage({
       }
     )
       .then(async (res) => {
-        //if (!res.ok) throw new Error("Failed to fetch video metadata");
         if (res.status === 204) {
           setShowEmptyPage(true);
           return;
         }
         const data: IVideoMetadataDto[] = await res.json();
 
-        // 2️⃣ Build row structure (initially without thumbnails)
         const newRows: IVideoRow[] = data.map((video) => {
           const formattedDate = new Date(video.uploadDate).toLocaleString(
             "tr-TR",
@@ -96,13 +93,12 @@ export default function VideosPage({
             videoDescription: video.description,
             videoDuration: video.duration,
             videoDate: formattedDate,
-            thumbnailUrl: null, // placeholder until loaded
+            thumbnailUrl: null,
           };
         });
 
         setRows(newRows);
 
-        // 3️⃣ Fetch thumbnails for each video
         data.forEach(async (video, index) => {
           try {
             const thumbResponse = await fetch(
@@ -113,7 +109,6 @@ export default function VideosPage({
             const blob = await thumbResponse.blob();
             const url = URL.createObjectURL(blob);
 
-            // Update that specific video’s thumbnail
             setRows((prev) =>
               prev!.map((row) =>
                 row.videoId === video.id ? { ...row, thumbnailUrl: url } : row

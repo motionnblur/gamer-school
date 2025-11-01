@@ -35,7 +35,7 @@ export default function Videos() {
         console.error("Error fetching upload state:", err);
         setShowEmptyPage(true);
       } finally {
-        setIsLoading(false); // ⬅️ finished loading
+        setIsLoading(false);
       }
     };
 
