@@ -91,4 +91,20 @@ public class VideoService {
         Files.deleteIfExists(Paths.get(uploadEntity.get().getFilePath()));
         Files.deleteIfExists(Paths.get(uploadEntity.get().getThumbnailPath()));
     }
+
+    public VideoMetadataDto getVideoMetadata(long videoId) {
+        Optional<UploadEntity> uploadEntity = uploadEntityRepository.findById(videoId);
+        if(uploadEntity.isEmpty()) {
+            throw new RuntimeException("Upload entity not found");
+        }
+
+        VideoMetadataDto dto = new VideoMetadataDto();
+        dto.setId(uploadEntity.get().getId());
+        dto.setTitle(uploadEntity.get().getTitle());
+        dto.setDescription(uploadEntity.get().getDescription());
+        dto.setDuration(uploadEntity.get().getDurationSeconds());
+        dto.setUploadDate(uploadEntity.get().getUploadDate());
+
+        return dto;
+    }
 }

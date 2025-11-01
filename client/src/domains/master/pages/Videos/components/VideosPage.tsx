@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   IconButton,
   Paper,
   Stack,
@@ -13,31 +14,18 @@ import {
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import React, { useEffect, useState } from "react";
-
-interface IVideoMetadataDto {
-  id: string;
-  title: string;
-  description: string;
-  duration: number;
-  uploadDate: string;
-}
-
-interface IVideoRow {
-  videoId: string;
-  videoTitle: string;
-  videoDescription: string;
-  videoDuration: number;
-  videoDate: string;
-  thumbnailUrl: string | null;
-}
+import { useAtom } from "jotai";
+import { videoRowAtom } from "../atoms/videoPageAtoms";
 
 export default function VideosPage({
   setShowEmptyPage,
+  setShowVideoUploader,
 }: {
   setShowEmptyPage: React.Dispatch<React.SetStateAction<boolean>>;
+  setShowVideoUploader: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
-  const [rows, setRows] = useState<IVideoRow[]>([]);
-  const videoMenuRef = React.useRef<HTMLDivElement>(null);
+  const [rows, setRows] = useAtom(videoRowAtom);
+  const [hoveredRowId, setHoveredRowId] = useState<string | null>(null);
 
   function handleEditButton() {
     alert("Edit");
@@ -52,14 +40,14 @@ export default function VideosPage({
         return res.json();
       })
       .then((data) => {
-        rows.splice(
-          rows.findIndex((row) => row.videoId === videoId),
+        rows!.splice(
+          rows!.findIndex((row) => row.videoId === videoId),
           1
         );
-        if (rows.length === 0) {
+        if (rows!.length === 0) {
           setShowEmptyPage(true);
         } else {
-          setRows([...rows]);
+          setRows([...rows!]);
         }
       })
       .catch((err) => {
@@ -126,7 +114,7 @@ export default function VideosPage({
 
             // Update that specific video’s thumbnail
             setRows((prev) =>
-              prev.map((row) =>
+              prev!.map((row) =>
                 row.videoId === video.id ? { ...row, thumbnailUrl: url } : row
               )
             );
@@ -139,114 +127,126 @@ export default function VideosPage({
   }, []);
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Videos</TableCell>
-            <TableCell align="right">Descriptions</TableCell>
-            <TableCell align="right">Durations</TableCell>
-            <TableCell align="right">Date</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.videoTitle}
-              sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-            >
-              <TableCell
-                component="th"
-                scope="row"
-                sx={{
-                  width: "280px",
-                  height: "100px",
-                }}
-                onMouseEnter={() => {
-                  if (videoMenuRef.current && videoMenuRef.current.style) {
-                    videoMenuRef.current.style.display = "flex";
-                  }
-                }}
-                onMouseLeave={() => {
-                  if (videoMenuRef.current && videoMenuRef.current.style) {
-                    videoMenuRef.current.style.display = "none";
-                  }
-                }}
+    <Stack direction={"column"}>
+      <Box
+        sx={{
+          width: "100%",
+          height: "60px",
+          display: "flex",
+          justifyContent: "flex-end",
+        }}
+      >
+        <Button
+          variant="contained"
+          onClick={() => {
+            setShowVideoUploader(true);
+          }}
+          sx={{ margin: "10px" }}
+        >
+          Upload
+        </Button>
+      </Box>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table">
+          <TableHead>
+            <TableRow>
+              <TableCell>Videos</TableCell>
+              <TableCell align="right">Descriptions</TableCell>
+              <TableCell align="right">Durations</TableCell>
+              <TableCell align="right">Date</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {rows!.map((row) => (
+              <TableRow
+                key={row.videoTitle}
+                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
               >
-                <Stack
-                  sx={{ width: "100%", height: "100%" }}
-                  direction={"row"}
-                  gap={2}
+                <TableCell
+                  component="th"
+                  scope="row"
+                  sx={{
+                    width: "280px",
+                    height: "100px",
+                  }}
+                  onMouseEnter={() => setHoveredRowId(row.videoId)} // 👈 hover start
+                  onMouseLeave={() => setHoveredRowId(null)}
                 >
-                  <img
-                    style={{
-                      width: "100px",
-                      height: "68px",
-                      objectFit: "contain",
-                      borderRadius: "8px",
-                      border: "1px solid black",
-                    }}
-                    src={
-                      row.thumbnailUrl // ✅ dynamically from backend
-                        ? row.thumbnailUrl
-                        : "https://via.placeholder.com/100x68?text=Loading..."
-                    }
-                    alt={row.videoTitle}
-                  />
                   <Stack
-                    direction={"column"}
                     sx={{ width: "100%", height: "100%" }}
+                    direction={"row"}
+                    gap={2}
                   >
-                    <Box sx={{ width: "100%", height: "100%" }}>
-                      {row.videoTitle}
-                    </Box>
-                    <Box
-                      sx={{
-                        width: "100%",
-                        height: "100%",
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
+                    <img
+                      style={{
+                        width: "100px",
+                        height: "68px",
+                        objectFit: "contain",
+                        borderRadius: "8px",
+                        border: "1px solid black",
                       }}
+                      src={
+                        row.thumbnailUrl // ✅ dynamically from backend
+                          ? row.thumbnailUrl
+                          : "https://via.placeholder.com/100x68?text=Loading..."
+                      }
+                      alt={row.videoTitle}
+                    />
+                    <Stack
+                      direction={"column"}
+                      sx={{ width: "100%", height: "100%" }}
                     >
-                      <Stack
-                        direction={"row"}
-                        gap={1}
+                      <Box sx={{ width: "100%", height: "100%" }}>
+                        {row.videoTitle}
+                      </Box>
+                      <Box
                         sx={{
                           width: "100%",
                           height: "100%",
-                          display: "none",
+                          display: "flex",
+                          justifyContent: "center",
+                          alignItems: "center",
                         }}
-                        ref={videoMenuRef}
                       >
-                        <IconButton
-                          aria-label="edit"
-                          size="small"
-                          onClick={handleEditButton}
-                        >
-                          <EditIcon fontSize="inherit" />
-                        </IconButton>
-                        <IconButton
-                          aria-label="delete"
-                          size="small"
-                          onClick={() => {
-                            handleDeleteButton(row.videoId);
+                        <Stack
+                          direction={"row"}
+                          gap={1}
+                          sx={{
+                            width: "100%",
+                            height: "100%",
+                            display:
+                              hoveredRowId === row.videoId ? "flex" : "none",
                           }}
                         >
-                          <DeleteIcon fontSize="inherit" />
-                        </IconButton>
-                      </Stack>
-                    </Box>
+                          <IconButton
+                            aria-label="edit"
+                            size="small"
+                            onClick={handleEditButton}
+                          >
+                            <EditIcon fontSize="inherit" />
+                          </IconButton>
+                          <IconButton
+                            aria-label="delete"
+                            size="small"
+                            onClick={() => {
+                              handleDeleteButton(row.videoId);
+                            }}
+                          >
+                            <DeleteIcon fontSize="inherit" />
+                          </IconButton>
+                        </Stack>
+                      </Box>
+                    </Stack>
                   </Stack>
-                </Stack>
-              </TableCell>
-              <TableCell align="right">{row.videoDescription}</TableCell>
-              <TableCell align="right">{row.videoDuration}</TableCell>
-              <TableCell align="right">{row.videoDate}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                </TableCell>
+                <TableCell align="right">{row.videoDescription}</TableCell>
+                <TableCell align="right">{row.videoDuration}</TableCell>
+                <TableCell align="right">{row.videoDate}</TableCell>
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </Stack>
   );
 }

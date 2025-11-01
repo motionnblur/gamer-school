@@ -88,7 +88,7 @@ public class UploadService {
         pendingVideoId.put(fileId, ue.getId());
     }
 
-    public void handleUploadMetadata(String fileId,
+    public Long handleUploadMetadata(String fileId,
                                      String title,
                                      String description,
                                      MultipartFile thumbnail) throws IOException {
@@ -111,6 +111,8 @@ public class UploadService {
 
         uploadEntityRepository.save(uploadEntity.get());
         pendingVideoId.remove(fileId);
+
+        return uploadEntity.get().getId();
     }
 
     public void handleGetUploadState(String masterId) throws IOException {

@@ -33,6 +33,15 @@ public class VideoController {
             throw new RuntimeException(e);
         }
     }
+    @GetMapping("/get-video-metadata")
+    public ResponseEntity<VideoMetadataDto> getVideoMetadata(@RequestParam("videoId") long videoId) {
+        try{
+            VideoMetadataDto dto = videoService.getVideoMetadata(videoId);
+            return new ResponseEntity<>(dto, HttpStatus.OK);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
     @GetMapping("/get-video-thumbnail")
     public ResponseEntity<byte[]> getVideoThumbnail(@RequestParam("videoId") long videoId) {
         try {

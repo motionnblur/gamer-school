@@ -13,6 +13,8 @@ import {
 } from "@mui/material";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import ImageIcon from "@mui/icons-material/Image";
+import { store } from "@/shared/atoms/store";
+import { videoRowAtom } from "../atoms/videoPageAtoms";
 
 interface VideoUploadProps {
   onUpload?: (
@@ -127,8 +129,49 @@ const VideoUploader = ({
         }
       );
       if (!response.ok) throw new Error("Metadata upload failed");
+      const text = await response.text();
+      const videoId = Number(text);
 
-      alert("Video uploaded successfully!");
+      const response2 = await fetch(
+        `http://localhost:8080/master/get-video-metadata?videoId=${videoId}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (!response2.ok) throw new Error("Failed to get video metadata");
+      const data: IVideoMetadataDto = await response2.json();
+      const thumbResponse = await fetch(
+        `http://localhost:8080/master/get-video-thumbnail?videoId=${videoId}`,
+        {
+          method: "GET",
+          credentials: "include",
+        }
+      );
+      if (!thumbResponse.ok) throw new Error("Failed to get video thumbnail");
+      const thumbnailBlow = await thumbResponse.blob();
+      const thumbnailUrl = URL.createObjectURL(thumbnailBlow);
+
+      const formattedDate = new Date(data.uploadDate).toLocaleString("tr-TR", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false,
+      });
+
+      const videoRow: IVideoRow = {
+        videoTitle: data.title,
+        videoDescription: data.description,
+        videoDuration: data.duration,
+        videoDate: formattedDate,
+        thumbnailUrl: thumbnailUrl,
+        videoId: data.id,
+      };
+      store.set(videoRowAtom, [...store.get(videoRowAtom), videoRow]);
+
       onUpload?.(videoFile, {
         title,
         description,
@@ -140,6 +183,17 @@ const VideoUploader = ({
     } finally {
       setUploading(false);
       setShowEmptyPage(false);
+
+      /* const videoRow: IVideoRow = {
+        videoId: fileId,
+        videoTitle: title,
+        videoDescription: description,
+        videoDuration: 0,
+        videoDate: new Date().toISOString(),
+        thumbnailUrl: thumbnailURL,
+      };
+
+      store.set(videoRowAtom, [...store.get(videoRowAtom), videoRow]); */
     }
   };
 

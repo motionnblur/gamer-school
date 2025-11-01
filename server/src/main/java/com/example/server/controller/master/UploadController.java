@@ -2,6 +2,7 @@ package com.example.server.controller.master;
 
 import com.example.server.service.master.UploadService;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,7 +46,7 @@ public class UploadController {
     }
 
     @PostMapping("upload-metadata")
-    public HttpStatus uploadMetadata(
+    public ResponseEntity<Long> uploadMetadata(
             @RequestParam("fileId") String fileId,
             @RequestParam("title") String title,
             @RequestParam("description") String description,
@@ -53,11 +54,11 @@ public class UploadController {
     )
     {
         try{
-            uploadService.handleUploadMetadata(fileId, title, description, thumbnail);
-            return HttpStatus.OK;
+            Long videoId = uploadService.handleUploadMetadata(fileId, title, description, thumbnail);
+            return new ResponseEntity<>(videoId, HttpStatus.OK);
         } catch(IOException e) {
             e.printStackTrace();
-            return HttpStatus.BAD_REQUEST;
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 }

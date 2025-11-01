@@ -1,7 +1,6 @@
-import { Stack, Typography } from "@mui/material";
+import { Stack } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import VideoUploader from "./components/VideoUploader";
-import MasterVideos from "./components/EmptyVideos";
 import EmptyVideos from "./components/EmptyVideos";
 import VideosPage from "./components/VideosPage";
 
@@ -74,7 +73,24 @@ export default function Videos() {
         </>
       )}
 
-      {!showEmptyPage && <VideosPage setShowEmptyPage={setShowEmptyPage} />}
+      {!showEmptyPage && (
+        <>
+          <VideosPage
+            setShowEmptyPage={setShowEmptyPage}
+            setShowVideoUploader={setShowVideoUploader}
+          />
+          {showVideoUploader && (
+            <VideoUploader
+              onUpload={() => {
+                setShowEmptyPage(true);
+                setShowVideoUploader(false);
+              }}
+              setShowVideoUploader={openCloseVideoUploader}
+              setShowEmptyPage={setShowEmptyPage}
+            />
+          )}
+        </>
+      )}
     </Stack>
   );
 }
