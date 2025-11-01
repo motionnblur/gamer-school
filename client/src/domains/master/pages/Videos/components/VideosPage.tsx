@@ -169,7 +169,7 @@ export default function VideosPage({
                     width: "280px",
                     height: "100px",
                   }}
-                  onMouseEnter={() => setHoveredRowId(row.videoId)} // 👈 hover start
+                  onMouseEnter={() => setHoveredRowId(row.videoId)}
                   onMouseLeave={() => setHoveredRowId(null)}
                 >
                   <Stack
@@ -186,7 +186,7 @@ export default function VideosPage({
                         border: "1px solid black",
                       }}
                       src={
-                        row.thumbnailUrl // ✅ dynamically from backend
+                        row.thumbnailUrl
                           ? row.thumbnailUrl
                           : "https://via.placeholder.com/100x68?text=Loading..."
                       }

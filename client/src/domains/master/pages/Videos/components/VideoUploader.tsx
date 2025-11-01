@@ -14,13 +14,6 @@ import ImageIcon from "@mui/icons-material/Image";
 import { store } from "@/shared/atoms/store";
 import { videoRowAtom } from "../atoms/videoPageAtoms";
 
-interface VideoUploadProps {
-  onUpload?: (
-    file: File,
-    metadata: { title: string; description: string; thumbnail?: File }
-  ) => void;
-}
-
 const CHUNK_SIZE = 5 * 1024 * 1024; // 5 MB
 
 const VideoUploader = ({
