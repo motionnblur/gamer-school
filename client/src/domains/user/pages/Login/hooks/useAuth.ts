@@ -12,8 +12,6 @@ export async function handleSignup(
   } catch (err) {
     console.error("Signup error:", err);
     return false;
-  } finally {
-    return true;
   }
 }
 
@@ -32,8 +30,6 @@ export async function handleLogin(
   } catch (err) {
     console.error("Login error:", err);
     return false;
-  } finally {
-    return true;
   }
 }
 
@@ -51,7 +47,5 @@ export async function handleLoginMaster(
   } catch (err) {
     console.error("Login error:", err);
     return false;
-  } finally {
-    return true;
   }
 }
